@@ -1,58 +1,30 @@
 package com.example.androidproject_ing4;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
-import android.widget.FrameLayout;
-
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import android.view.View;
+import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
-    private BottomNavigationView topNavigationView;
-    private FrameLayout frameLayout;
-
-    private StatsFragment statsFragment;
-    private locationFragment locationFragment;
-    private historiqueFragment historiqueFragment;
+    private Button gameInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        frameLayout = (FrameLayout)findViewById(R.id.main_frame);
-        topNavigationView = findViewById(R.id.navigation_view);
+        gameInfo = (Button)findViewById(R.id.infoGame);
 
-        statsFragment = new StatsFragment();
-        locationFragment = new locationFragment();
-        historiqueFragment = new historiqueFragment();
-
-        topNavigationView.setOnNavigationItemReselectedListener(new BottomNavigationView.OnNavigationItemReselectedListener() {
+        gameInfo.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
-                switch(menuItem.getItemId()){
-                    case R.id.statistiques:
-                        setFragment(statsFragment);
-                        break;
-                    case R.id.location:
-                        setFragment(locationFragment);
-                        break;
-                    case R.id.historique:
-                        setFragment(historiqueFragment);
-                        break;
-                }
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, GameInfo.class);
+                startActivity(intent);
             }
         });
-    }
 
-    private void setFragment(Fragment fragment){
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.main_frame, fragment);
-        fragmentTransaction.commit();
     }
 }

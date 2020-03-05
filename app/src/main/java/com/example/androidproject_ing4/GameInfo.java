@@ -16,9 +16,6 @@ public class GameInfo extends AppCompatActivity {
     private BottomNavigationView topNavigationView;
     private FrameLayout frameLayout;
 
-    private StatsFragment statsFragment;
-    private locationFragment locationFragment;
-    private historiqueFragment historiqueFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,24 +25,21 @@ public class GameInfo extends AppCompatActivity {
         frameLayout = (FrameLayout)findViewById(R.id.main_frame);
         topNavigationView = findViewById(R.id.navigation_view);
 
-        statsFragment = new StatsFragment();
-        locationFragment = new locationFragment();
-        historiqueFragment = new historiqueFragment();
-
-        topNavigationView.setOnNavigationItemReselectedListener(new BottomNavigationView.OnNavigationItemReselectedListener() {
+        topNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch(menuItem.getItemId()){
                     case R.id.statistiques:
-                        setFragment(statsFragment);
-                        break;
+                        setFragment(new StatsFragment());
+                        return true;
                     case R.id.location:
-                        setFragment(locationFragment);
-                        break;
+                        setFragment(new locationFragment());
+                        return true;
                     case R.id.historique:
-                        setFragment(historiqueFragment);
-                        break;
+                        setFragment(new photoFragment());
+                        return true;
                 }
+                return false;
             }
         });
     }

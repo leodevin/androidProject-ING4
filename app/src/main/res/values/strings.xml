@@ -3,9 +3,8 @@
     <string name="statistiques">Statistiques</string>
     <string name="location">Location</string>
     <string name="historique">Historique</string>
+    <string name="add_game">Add Game</string>
+    <string name="Roger_ederer">Toger Federer</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="rogerFederer">Roger Federer</string>
-    <string name="addGame">Ajouter un match</string>
+
 </resources>

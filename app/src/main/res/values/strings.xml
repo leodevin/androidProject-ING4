@@ -18,6 +18,10 @@
     <string name="coup_droit_gagant">Coups droits gagnants</string>
     <string name="nb_jeu_gagne">Nombre jeu gagné</string>
     <string name="nb_faute_direct">Nb fautes direct</string>
+    <string name="date">Date : </string>
+    <string name="enter_date">Date of the game</string>
+    <string name="enter_adversaire">Adversaire of the game</string>
+    <string name="adversaire_form">"Adversaire : "</string>
 
 
 </resources>

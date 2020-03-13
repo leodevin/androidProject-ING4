@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".addGameActivity">
+
+    <TextView
+        android:id="@+id/date_form_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="50dp"
+        android:text="@string/date" />
+
+    <TextView
+        android:id="@+id/date_form_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/date_form_title"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="50dp"
+        android:layout_toEndOf="@+id/date_form_title"
+        android:hint="@string/enter_date" />
+
+    <TextView
+        android:id="@+id/adversaire_form_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@id/date_form_title"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="50dp"
+        android:text="@string/adversaire_form" />
+
+    <TextView
+        android:id="@+id/adversaire_form_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/adversaire_form_title"
+        android:layout_alignTop="@id/date_form_value"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="50dp"
+        android:hint="@string/enter_adversaire" />
+</RelativeLayout>

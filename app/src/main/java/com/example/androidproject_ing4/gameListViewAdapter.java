@@ -1,6 +1,7 @@
 package com.example.androidproject_ing4;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,7 @@ public class gameListViewAdapter extends RecyclerView.Adapter<gameListViewAdapte
     private ArrayList<String> adversaires = new ArrayList<>();
     //private ArrayList<String> gamesPicture = new ArrayList<>();
     private Context context;
+    public View v;
 
     public gameListViewAdapter(ArrayList<String> gamesDate, ArrayList<String> adversaires, Context context) {
         this.gamesDate = gamesDate;
@@ -34,13 +36,13 @@ public class gameListViewAdapter extends RecyclerView.Adapter<gameListViewAdapte
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.gamelist_listitem, parent, false);
-        ViewHolder holder = new ViewHolder(view);
+        v = LayoutInflater.from(parent.getContext()).inflate(R.layout.gamelist_listitem, parent, false);
+        ViewHolder holder = new ViewHolder(v);
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         Log.d(TAG, "onBindViewHolder: called.");
 
         holder.adversaire.setText(adversaires.get(position));
@@ -51,6 +53,10 @@ public class gameListViewAdapter extends RecyclerView.Adapter<gameListViewAdapte
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: clicked on : "+ gamesDate.get(position));
+
+                Intent intent = new Intent();
+                intent.setClass(v.getContext(), GameInfo.class);
+                v.getContext().startActivity(intent);
 
                 Toast.makeText(context, adversaires.get(position), Toast.LENGTH_SHORT).show();
             }

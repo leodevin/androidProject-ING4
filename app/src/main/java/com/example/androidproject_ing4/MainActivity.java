@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         dataBaseSQLite = new DataBaseSQLite(this);
 
         // A ENLEVER DES QU'ON A UNE DATABASE - INIT UN MATCH
-        //createDataBase();
+        createDataBase();
 
         initDatas();
 

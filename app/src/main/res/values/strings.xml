@@ -6,6 +6,18 @@
     <string name="add_game">Add Game</string>
     <string name="Roger_ederer">Toger Federer</string>
     <string name="photo">Photo</string>
+    <string name="resultat">Résultat</string>
+    <string name="_0">0</string>
+    <string name="adversaire">Adversaire</string>
+    <string name="duree">Durée : </string>
+    <string name="nombre_points_gagne">Nb pts gagnés</string>
+    <string name="prem_ere_balle">1ere balles</string>
+    <string name="aces">Aces</string>
+    <string name="double_fautes">Double fautes</string>
+    <string name="pts_gagne_prem_balle">Pts gagn. 1ere balle</string>
+    <string name="coup_droit_gagant">Coups droits gagnants</string>
+    <string name="nb_jeu_gagne">Nombre jeu gagné</string>
+    <string name="nb_faute_direct">Nb fautes direct</string>
 
 
 </resources>

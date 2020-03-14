@@ -20,16 +20,19 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class gameListViewAdapter extends RecyclerView.Adapter<gameListViewAdapter.ViewHolder> {
     private static final String TAG = "RecyclerViewAdapter";
 
+    private ArrayList<Integer> gamesId = new ArrayList<>();
     private ArrayList<String> gamesDate = new ArrayList<>();
     private ArrayList<String> adversaires = new ArrayList<>();
-    //private ArrayList<String> gamesPicture = new ArrayList<>();
+    private ArrayList<Integer> gamesPicture = new ArrayList<>();
+
     private Context context;
     public View v;
 
-    public gameListViewAdapter(ArrayList<String> gamesDate, ArrayList<String> adversaires, Context context) {
+    public gameListViewAdapter(ArrayList<Integer> gamesId, ArrayList<String> gamesDate, ArrayList<String> adversaires, ArrayList<Integer> gamesPicture,  Context context) {
+        this.gamesId = gamesId;
         this.gamesDate = gamesDate;
         this.adversaires = adversaires;
-     //   this.gamesPicture = gamesPicture;
+        this.gamesPicture = gamesPicture;
         this.context = context;
     }
 
@@ -47,7 +50,7 @@ public class gameListViewAdapter extends RecyclerView.Adapter<gameListViewAdapte
 
         holder.adversaire.setText(adversaires.get(position));
         holder.gameDate.setText(gamesDate.get(position));
-        //holder.image.setText(gamesPicture.get(position));
+        holder.image.setImageResource(gamesPicture.get(position));
 
         holder.listLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +59,7 @@ public class gameListViewAdapter extends RecyclerView.Adapter<gameListViewAdapte
 
                 Intent intent = new Intent();
                 intent.setClass(v.getContext(), GameInfo.class);
+                intent.putExtra("id", gamesId.get(position));
                 v.getContext().startActivity(intent);
 
                 Toast.makeText(context, adversaires.get(position), Toast.LENGTH_SHORT).show();

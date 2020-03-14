@@ -24,11 +24,12 @@ public class MainActivity extends AppCompatActivity {
 
     // Database
     DataBaseSQLite dataBaseSQLite;
-    Cursor cursor;
 
     //vars for recyclerview
     private ArrayList<String> adversaires = new ArrayList<>();
     private ArrayList<String> dates = new ArrayList<>();
+    private ArrayList<Integer> photosDuMatch = new ArrayList<>();
+    private ArrayList<Integer> idMatchs = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         dataBaseSQLite = new DataBaseSQLite(this);
 
         // A ENLEVER DES QU'ON A UNE DATABASE - INIT UN MATCH
-        createDataBase();
+        //createDataBase();
 
         initDatas();
 
@@ -55,20 +56,24 @@ public class MainActivity extends AppCompatActivity {
 
     private void initDatas(){
 
+        // ON RECUPERE LE NOM DU JOUEUR DU COACH
         Cursor cursor_nomJoueur = dataBaseSQLite.getNomJoueur();
         if (cursor_nomJoueur.moveToFirst())
             nomJoueur.setText(cursor_nomJoueur.getString(0));
 
+        // ON RECUPERE L'ID DES MATCHS POUR TROUVER LEURS PHOTOS
         Cursor cursor_idsMatch = dataBaseSQLite.getIdsMatchs();
         if (cursor_idsMatch.moveToFirst()){
             for (int i=0; i<cursor_idsMatch.getCount(); i++){
-                Cursor cursor_photo = dataBaseSQLite.getPhotosById(cursor_idsMatch.getInt(0));
+                idMatchs.add(cursor_idsMatch.getInt(i));
+                Cursor cursor_photo = dataBaseSQLite.getPhotosById(cursor_idsMatch.getInt(i));
                 if (cursor_photo.moveToFirst()){
-                    // SET LES PHOTOS DE LA LISTE VIEW
+                    photosDuMatch.add(getResources().getIdentifier("drawable/"+cursor_photo.getString(0), "id", this.getPackageName()));
                 }
             }
         }
 
+        // ON RECUPERE TOUTES LES DONNEES IMPORTANTE DES MATCHS
         Cursor cursor_match = dataBaseSQLite.getAllMatchs();
         if (cursor_match.moveToFirst()){
             for (int i=0; i<cursor_match.getCount(); i++){
@@ -83,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
     private void initRecyclerView(){
         Log.d(TAG, "initDatas launched");
         RecyclerView recyclerView = findViewById(R.id.gameList);
-        gameListViewAdapter adapter = new gameListViewAdapter( dates, adversaires, this);
+        gameListViewAdapter adapter = new gameListViewAdapter(idMatchs ,dates, adversaires, photosDuMatch,this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -94,7 +99,11 @@ public class MainActivity extends AppCompatActivity {
         dataBaseSQLite.addSets(30, 4, 6, 6, 2, 1);
         dataBaseSQLite.addStatistiques(40, 100, 100, 100, 100, 100, 100, 100, 100);
         dataBaseSQLite.addStatistiques(50, 100, 100, 100, 100, 100, 100, 100, 100);
-        dataBaseSQLite.addPhoto(1, "path", 1);
+        dataBaseSQLite.addPhoto(1, "tennis1", 1);
+        dataBaseSQLite.addPhoto(2, "tennis2", 1);
+        dataBaseSQLite.addPhoto(3, "tennis3", 1);
+        dataBaseSQLite.addPhoto(4, "tennis4", 1);
+        dataBaseSQLite.addPhoto(5, "tennis5", 1);
         dataBaseSQLite.addMatch(1, "12/04/2020","Roger", "Nadal", "2H33", 10, 20, 30, 40, 50);
     }
 }

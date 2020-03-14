@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DataBaseSQLite extends SQLiteOpenHelper {
 
     // DATABASE & TABLE
-    private static final String DB_NAME = "AndroidCoach.db";
+    private static final String DB_NAME = "myDB.db";
     private static final String TABLE_LOCALISATIONS = "Localisations";
     private static final String TABLE_SETS = "Sets";
     private static final String TABLE_STATISTIQUES = "Statistiques";
@@ -275,7 +275,7 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
 
     public Cursor getPhotosById(int id) {
         database = this.getReadableDatabase();
-        String requete = "SELECT * FROM " + TABLE_PHOTOS + " WHERE " + COLUMS_IdMatchs + " = " + id;
+        String requete = "SELECT " + COLUMS_Path + " FROM " + TABLE_PHOTOS + " WHERE " + COLUMS_IdMatchs + " = " + id;
         Cursor cursor = database.rawQuery(requete, null);
         return cursor;
     }

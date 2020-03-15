@@ -20,14 +20,14 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
     private static final String TABLE_STATISTIQUES = "Statistiques";
     private static final String TABLE_PHOTOS = "Photos";
     private static final String TABLE_MATCHS = "Matchs";
-    private static final int VERSION = 2;
+    private static final int VERSION = 3;
 
     // FIELDS
     private static final String COLUMS_id = "Id";
 
     // LOCALISATIONS
-    private static final String COLUMS_longitude = "longitude";
     private static final String COLUMS_latitude = "latitude";
+    private static final String COLUMS_longitude = "longitude";
 
     // SETS
     private static final String COLUMS_un = "un";
@@ -77,8 +77,8 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_LOCALISATIONS + " ( "
                 + COLUMS_id + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COLUMS_longitude + " DOUBLE, "
-                + COLUMS_latitude + " DOUBLE);");
+                + COLUMS_latitude + " DOUBLE, "
+                + COLUMS_longitude + " DOUBLE);");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_SETS + " ( "
                 + COLUMS_id + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -257,11 +257,24 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
     }
 
     // GETTERS BY ID
-    public Cursor getLocalisationById(int id) {
+    public ArrayList<Double> getLocalisationById(int id) {
         database = this.getReadableDatabase();
-        String requete = "SELECT * FROM " + TABLE_LOCALISATIONS + " WHERE " + COLUMS_id + " = " + id;
-        Cursor cursor = database.rawQuery(requete, null);
-        return cursor;
+        String requete1 = "SELECT " + COLUMS_latitude + " FROM " + TABLE_LOCALISATIONS + " WHERE " + COLUMS_id + " = " + id;
+        String requete2 = "SELECT " + COLUMS_longitude + " FROM " + TABLE_LOCALISATIONS + " WHERE " + COLUMS_id + " = " + id;
+        Cursor cursor1 = database.rawQuery(requete1, null);
+        Cursor cursor2 = database.rawQuery(requete2, null);
+
+        ArrayList<Double> coordonnees = new ArrayList<>();
+
+        cursor1.moveToFirst();
+        cursor2.moveToFirst();
+
+        coordonnees.add(cursor1.getDouble(0));
+        coordonnees.add(cursor2.getDouble(0));
+        Log.d(TAG, "DATA récupérer "+cursor1.getDouble(0));
+        Log.d(TAG, "DATA récupérer "+cursor2.getDouble(0));
+
+        return coordonnees;
     }
 
     public Cursor getSetsById(int id) {
@@ -288,6 +301,13 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
     public Cursor getMatchsById(int id) {
         database = this.getReadableDatabase();
         String requete = "SELECT * FROM " + TABLE_MATCHS + " WHERE " + COLUMS_id + " = " + id;
+        Cursor cursor = database.rawQuery(requete, null);
+        return cursor;
+    }
+
+    public Cursor getMatchLocalisationById(int id) {
+        database = this.getReadableDatabase();
+        String requete = "SELECT " + COLUMS_Localisation + " FROM " + TABLE_MATCHS + " WHERE " + COLUMS_id + " = " + id;
         Cursor cursor = database.rawQuery(requete, null);
         return cursor;
     }

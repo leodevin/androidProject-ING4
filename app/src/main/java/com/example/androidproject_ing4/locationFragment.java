@@ -1,13 +1,16 @@
 package com.example.androidproject_ing4;
 
+import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.androidproject_ing4.outils.DataBaseSQLite;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -16,12 +19,21 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.Objects;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class locationFragment extends Fragment implements OnMapReadyCallback {
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
+    private static final String TAG = "MapFragment";
+
+    private DataBaseSQLite dataBaseSQLite;
+
+    private int idMatchSelected;
+    private ArrayList<Double> coordonnees = new ArrayList<>();
 
     public locationFragment() {
         // Required empty public constructor
@@ -33,6 +45,16 @@ public class locationFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_location, container, false);
+
+        try {
+            idMatchSelected = Objects.requireNonNull(getArguments()).getInt("id");
+        }catch (NullPointerException e){ Log.d(TAG, "id match actuel -> "+idMatchSelected); }
+
+        dataBaseSQLite = new DataBaseSQLite(getContext());
+
+        coordonnees = loadCoordonneeMatch();
+        Log.d(TAG, "Coordonnees - Lat: " + coordonnees.get(0) + " | Long: " +coordonnees.get(1));
+
         mMapView = (MapView) view.findViewById(R.id.mapView);
         initGoogleMap(savedInstanceState);
         return view;
@@ -86,10 +108,9 @@ public class locationFragment extends Fragment implements OnMapReadyCallback {
         map.getUiSettings().setZoomControlsEnabled(true);
         //map.setMyLocationEnabled(true);
 
-
         float zoomLevel = 13.0f; //This goes up to 21
-        map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(48.864716, 2.349014),zoomLevel));
-        map.addMarker(new MarkerOptions().position(new LatLng(48.864716, 2.349014)).title("Marker"));
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(coordonnees.get(0), coordonnees.get(1)),zoomLevel));
+        map.addMarker(new MarkerOptions().position(new LatLng(coordonnees.get(0), coordonnees.get(1))).title("Marker"));
     }
 
     @Override
@@ -108,5 +129,29 @@ public class locationFragment extends Fragment implements OnMapReadyCallback {
     public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
+    }
+
+    public ArrayList<Double> loadCoordonneeMatch(){
+        int idLocalisation = 0;
+
+        Cursor cursor_idLocalisation = dataBaseSQLite.getMatchLocalisationById(idMatchSelected);
+        if (cursor_idLocalisation.moveToFirst()){
+            if (!cursor_idLocalisation.isNull(0))
+                idLocalisation = cursor_idLocalisation.getInt(0);
+        }
+
+        return dataBaseSQLite.getLocalisationById(idLocalisation);
+        /*if (cursor.moveToFirst()){
+            do{
+                if (!cursor.isNull(0)){
+                    getCoordonnees.add(cursor.getDouble(0));
+                    Log.d(TAG, "DATA récupérer "+cursor.getDouble(0));
+                    Log.d(TAG, "Coordonnées récupérer pour le match "+idMatchSelected+" localisation "+idLocalisation+ " SIZE "+cursor.getCount());
+                } else {
+                    Log.d(TAG, "Pas de coordonnées pour le match selectionné "+idMatchSelected+" localisation "+idLocalisation);
+                }
+            }while (cursor.moveToNext());
+        }*/
+        //return getCoordonnees;
     }
 }

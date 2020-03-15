@@ -5,11 +5,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import java.util.ArrayList;
 
 public class DataBaseSQLite extends SQLiteOpenHelper {
 
+    private static final String TAG = "DataBaseMySQL";
+
     // DATABASE & TABLE
-    private static final String DB_NAME = "myDB.db";
+    private static final String DB_NAME = "CoachDataBase.db";
     private static final String TABLE_LOCALISATIONS = "Localisations";
     private static final String TABLE_SETS = "Sets";
     private static final String TABLE_STATISTIQUES = "Statistiques";
@@ -70,12 +75,12 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + TABLE_LOCALISATIONS + " ( "
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_LOCALISATIONS + " ( "
                 + COLUMS_id + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMS_longitude + " DOUBLE, "
                 + COLUMS_latitude + " DOUBLE);");
 
-        db.execSQL("CREATE TABLE " + TABLE_SETS + " ( "
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_SETS + " ( "
                 + COLUMS_id + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMS_un + " INTEGER, "
                 + COLUMS_deux + " INTEGER, "
@@ -83,7 +88,7 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
                 + COLUMS_quatre + " INTEGER, "
                 + COLUMS_cinq + " INTEGER);");
 
-        db.execSQL("CREATE TABLE " + TABLE_STATISTIQUES + " ( "
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_STATISTIQUES + " ( "
                 + COLUMS_id + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMS_NbPtsGagnes + " INTEGER, "
                 + COLUMS_PremieresBalles + " INTEGER, "
@@ -94,13 +99,13 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
                 + COLUMS_NombreDeJeuGagnes + " INTEGER, "
                 + COLUMS_FautesDirects + " INTEGER);");
 
-        db.execSQL("CREATE TABLE " + TABLE_PHOTOS + " ( "
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_PHOTOS + " ( "
                 + COLUMS_id + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMS_Path + " TEXT, "
                 + COLUMS_IdMatchs + " INTEGER, "
                 + "FOREIGN KEY (" + COLUMS_IdMatchs + ") REFERENCES " + TABLE_MATCHS + " (" + COLUMS_id + "));");
 
-        db.execSQL("CREATE TABLE " + TABLE_MATCHS + " ( "
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_MATCHS + " ( "
                 + COLUMS_id + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMS_Date + " TEXT, "
                 + COLUMS_Joueur + " TEXT, "
@@ -198,7 +203,7 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
         contentValues.put(COLUMS_IdMatchs, idMatchs);
         long result = database.insert(TABLE_PHOTOS, null, contentValues);
 
-        if (result == -1) return false;
+        if (result == -1)return false;
         else return true;
     }
 

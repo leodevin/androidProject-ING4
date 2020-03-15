@@ -104,6 +104,6 @@ public class MainActivity extends AppCompatActivity {
         dataBaseSQLite.addPhoto(3, "tennis3", 1);
         dataBaseSQLite.addPhoto(4, "tennis4", 1);
         dataBaseSQLite.addPhoto(5, "tennis5", 1);
-        dataBaseSQLite.addMatch(1, "12/04/2020","Roger", "Nadal", "2H33", 10, 20, 30, 40, 50);
+        dataBaseSQLite.addMatch(1, "12/04/2020","Roger Federrer", "Nadal", "2H33", 10, 20, 30, 40, 50);
     }
 }

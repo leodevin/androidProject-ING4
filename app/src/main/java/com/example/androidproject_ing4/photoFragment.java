@@ -18,6 +18,7 @@ import com.synnapps.carouselview.ImageClickListener;
 import com.synnapps.carouselview.ImageListener;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 /**
@@ -25,16 +26,17 @@ import java.util.ArrayList;
  */
 public class photoFragment extends Fragment {
 
+    private static final String TAG = "PhotoFragment";
+
     // Database
-    DataBaseSQLite dataBaseSQLite;
+    private DataBaseSQLite dataBaseSQLite;
 
-    ArrayList<String> imagesTitle = new ArrayList<>();
-    ArrayList<Integer> images = new ArrayList<>();
+    private ArrayList<String> imagesTitle = new ArrayList<>();
+    private ArrayList<Integer> images = new ArrayList<>();
 
-    int idMatchSelected;
+    private int idMatchSelected;
 
-    public photoFragment() {
-        // Required empty public constructor
+    public photoFragment() {// Required empty public constructor
     }
 
     @Override
@@ -42,14 +44,18 @@ public class photoFragment extends Fragment {
                              Bundle savedInstanceState) {
         View RootView = inflater.inflate(R.layout.fragment_photo, container, false);
 
-        idMatchSelected = getArguments().getInt("id");
+        try {
+            idMatchSelected = Objects.requireNonNull(getArguments()).getInt("id");
+        }catch (NullPointerException e){ Log.d(TAG, "id match actuel -> "+idMatchSelected); }
 
         dataBaseSQLite = new DataBaseSQLite(getContext());
 
         loadPhotosDuMatch();
 
         for (int i=0; i<imagesTitle.size(); i++){
-            images.add(getResources().getIdentifier("drawable/"+imagesTitle.get(i), "id", getActivity().getPackageName()));
+            try {
+                images.add(getResources().getIdentifier("drawable/"+imagesTitle.get(i), "id", Objects.requireNonNull(getActivity()).getPackageName()));
+            }catch (NullPointerException e){ Log.d(TAG, "Problem Package name");}
         }
 
         CarouselView carouselView = RootView.findViewById(R.id.caroussel);
@@ -63,18 +69,24 @@ public class photoFragment extends Fragment {
         carouselView.setImageClickListener(new ImageClickListener() {
             @Override
             public void onClick(int position) {
-                Toast.makeText(getContext(),imagesTitle.get(position), Toast.LENGTH_SHORT ).show();
+                Toast.makeText(getContext(),imagesTitle.get(position), Toast.LENGTH_SHORT).show();
             }
         });
         // Inflate the layout for this fragment
         return RootView;
     }
 
-    public void loadPhotosDuMatch(){
+    private void loadPhotosDuMatch(){
         Cursor cursor_photos = dataBaseSQLite.getPhotosById(idMatchSelected);
         if (cursor_photos.moveToFirst()){
-            for (int i=0; i<cursor_photos.getCount(); i++){
-                imagesTitle.add(cursor_photos.getString(i));
+            if (cursor_photos.moveToFirst()){
+                do{
+                    if (!cursor_photos.isNull(0)){
+                        imagesTitle.add(cursor_photos.getString(0));
+                    } else {
+                        Log.d(TAG, "Plus de photo pour le match selectionné ");
+                    }
+                }while (cursor_photos.moveToNext());
             }
         }
     }

@@ -22,6 +22,9 @@
     <string name="enter_date">Date of the game</string>
     <string name="enter_adversaire">Adversaire of the game</string>
     <string name="adversaire_form">"Adversaire : "</string>
+    <string name="addGameTitle">Ajouter un match</string>
+    <string name="addGameResTitle">Résultat du match</string>
+    <string name="takePicture">Prendre une photo</string>
 
 
 </resources>

@@ -26,70 +26,40 @@
         android:stretchColumns="*">
 
         <TableRow
+            android:id="@+id/sets_joueur"
             android:layout_width="0dp">
 
             <TextView
                 android:layout_width="120dp"
                 android:padding="3dip"
-                android:text="@string/Roger_ederer" />
-
-            <TextView
-                android:padding="3dip"
-                android:text="@string/_0"
-                android:textAlignment="center"
-                android:background="#F4F4F4"/>
-
-            <TextView
-                android:padding="3dip"
-                android:textAlignment="center"
-                android:text="@string/_0" />
-            <TextView
-                android:padding="3dip"
-                android:textAlignment="center"
-                android:text="@string/_0"
-                android:background="#F4F4F4"/>/>
-            <TextView
-                android:padding="3dip"
-                android:textAlignment="center"
-                android:text="@string/_0" />
-            <TextView
-                android:padding="3dip"
-                android:textAlignment="center"
-                android:text="@string/_0"
-                android:background="#F4F4F4"/>/>
+                android:text="@string/Roger_ederer" /><![CDATA[
 
 
+
+            />
+
+            />
+
+
+        ]]>
         </TableRow>
 
-        <TableRow>
+        <TableRow android:id="@+id/sets_adversaire">
 
             <TextView
                 android:padding="3dip"
-                android:text="@string/adversaire" />
+                android:text="@string/adversaire" /><![CDATA[
 
-            <TextView
-                android:padding="3dip"
-                android:textAlignment="center"
-                android:text="@string/_0"
-                android:background="#F4F4F4"/>/>
-            <TextView
-                android:padding="3dip"
-                android:textAlignment="center"
-                android:text="@string/_0" />
-            <TextView
-                android:padding="3dip"
-                android:textAlignment="center"
-                android:text="@string/_0"
-                android:background="#F4F4F4"/>/>
-            <TextView
-                android:padding="3dip"
-                android:textAlignment="center"
-                android:text="@string/_0" />
-            <TextView
-                android:padding="3dip"
-                android:textAlignment="center"
-                android:text="@string/_0"
-                android:background="#F4F4F4"/>/>
+            />
+
+
+
+            />
+
+
+
+            />
+        ]]>
         </TableRow>
 
     </TableLayout>

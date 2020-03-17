@@ -79,15 +79,13 @@ public class photoFragment extends Fragment {
     private void loadPhotosDuMatch(){
         Cursor cursor_photos = dataBaseSQLite.getPhotosById(idMatchSelected);
         if (cursor_photos.moveToFirst()){
-            if (cursor_photos.moveToFirst()){
-                do{
-                    if (!cursor_photos.isNull(0)){
-                        imagesTitle.add(cursor_photos.getString(0));
-                    } else {
-                        Log.d(TAG, "Plus de photo pour le match selectionné ");
-                    }
-                }while (cursor_photos.moveToNext());
-            }
+            do{
+                if (!cursor_photos.isNull(0)){
+                    imagesTitle.add(cursor_photos.getString(0));
+                } else {
+                    Log.d(TAG, "Plus de photo pour le match selectionné ");
+                }
+            }while (cursor_photos.moveToNext());
         }
     }
 }

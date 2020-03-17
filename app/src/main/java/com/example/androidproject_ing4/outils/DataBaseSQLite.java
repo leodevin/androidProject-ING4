@@ -20,7 +20,7 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
     private static final String TABLE_STATISTIQUES = "Statistiques";
     private static final String TABLE_PHOTOS = "Photos";
     private static final String TABLE_MATCHS = "Matchs";
-    private static final int VERSION = 3;
+    private static final int VERSION = 4;
 
     // FIELDS
     private static final String COLUMS_id = "Id";
@@ -76,12 +76,12 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_LOCALISATIONS + " ( "
-                + COLUMS_id + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMS_id + " INTEGER PRIMARY KEY, "
                 + COLUMS_latitude + " DOUBLE, "
                 + COLUMS_longitude + " DOUBLE);");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_SETS + " ( "
-                + COLUMS_id + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMS_id + " INTEGER PRIMARY KEY, "
                 + COLUMS_un + " INTEGER, "
                 + COLUMS_deux + " INTEGER, "
                 + COLUMS_trois + " INTEGER, "
@@ -89,7 +89,7 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
                 + COLUMS_cinq + " INTEGER);");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_STATISTIQUES + " ( "
-                + COLUMS_id + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMS_id + " INTEGER PRIMARY KEY, "
                 + COLUMS_NbPtsGagnes + " INTEGER, "
                 + COLUMS_PremieresBalles + " INTEGER, "
                 + COLUMS_Aces + " INTEGER, "
@@ -100,13 +100,13 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
                 + COLUMS_FautesDirects + " INTEGER);");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_PHOTOS + " ( "
-                + COLUMS_id + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMS_id + " INTEGER PRIMARY KEY, "
                 + COLUMS_Path + " TEXT, "
                 + COLUMS_IdMatchs + " INTEGER, "
                 + "FOREIGN KEY (" + COLUMS_IdMatchs + ") REFERENCES " + TABLE_MATCHS + " (" + COLUMS_id + "));");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_MATCHS + " ( "
-                + COLUMS_id + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMS_id + " INTEGER PRIMARY KEY, "
                 + COLUMS_Date + " TEXT, "
                 + COLUMS_Joueur + " TEXT, "
                 + COLUMS_Adversaire + " TEXT, "
@@ -256,23 +256,32 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
         return cursor;
     }
 
+    public ArrayList<Integer> getSetsIdFromMatch(int id){
+        database = this.getReadableDatabase();
+        String requete = "SELECT " + COLUMS_SetsJoueur + "," + COLUMS_SetsAdversaire + " FROM " + TABLE_MATCHS + " WHERE " + COLUMS_id + " = " + id;
+        Cursor cursor = database.rawQuery(requete, null);
+
+        ArrayList<Integer> idSets = new ArrayList<>();
+        if (cursor.moveToFirst()){
+            if (!cursor.isNull(0) && !cursor.isNull(1)){
+                idSets.add(cursor.getInt(0));
+                idSets.add(cursor.getInt(1));
+            }
+        }
+        return idSets;
+    }
+
     // GETTERS BY ID
     public ArrayList<Double> getLocalisationById(int id) {
         database = this.getReadableDatabase();
-        String requete1 = "SELECT " + COLUMS_latitude + " FROM " + TABLE_LOCALISATIONS + " WHERE " + COLUMS_id + " = " + id;
-        String requete2 = "SELECT " + COLUMS_longitude + " FROM " + TABLE_LOCALISATIONS + " WHERE " + COLUMS_id + " = " + id;
-        Cursor cursor1 = database.rawQuery(requete1, null);
-        Cursor cursor2 = database.rawQuery(requete2, null);
+        String requete = "SELECT " + COLUMS_latitude + ", " + COLUMS_longitude + " FROM " + TABLE_LOCALISATIONS + " WHERE " + COLUMS_id + " = " + id;
+        Cursor cursor = database.rawQuery(requete, null);
 
         ArrayList<Double> coordonnees = new ArrayList<>();
+        if (cursor != null) cursor.moveToFirst();
 
-        cursor1.moveToFirst();
-        cursor2.moveToFirst();
-
-        coordonnees.add(cursor1.getDouble(0));
-        coordonnees.add(cursor2.getDouble(0));
-        Log.d(TAG, "DATA récupérer "+cursor1.getDouble(0));
-        Log.d(TAG, "DATA récupérer "+cursor2.getDouble(0));
+        coordonnees.add(cursor.getDouble(cursor.getColumnIndex(COLUMS_latitude)));
+        coordonnees.add(cursor.getDouble(cursor.getColumnIndex(COLUMS_longitude)));
 
         return coordonnees;
     }

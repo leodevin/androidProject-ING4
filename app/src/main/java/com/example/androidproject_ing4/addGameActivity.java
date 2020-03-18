@@ -21,6 +21,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.androidproject_ing4.outils.DataBaseSQLite;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,6 +33,8 @@ import java.io.InputStreamReader;
 
 public class addGameActivity extends AppCompatActivity {
 
+    // Database
+    DataBaseSQLite dataBaseSQLite;
 
     private static final int PERMISSION_CODE = 1000;
     private static final int IMAGE_CAPTURE_CODE = 1001 ;
@@ -79,6 +83,8 @@ public class addGameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_game);
 
+        dataBaseSQLite = new DataBaseSQLite(this);
+
         init();
 
         takenPicture.setOnClickListener(new View.OnClickListener() {
@@ -108,8 +114,43 @@ public class addGameActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //enregistrer dans la database le nouveau match
+                saveInDB();
             }
         });
+    }
+
+    private void saveInDB() {
+        dataBaseSQLite.addSets(21,
+                Integer.parseInt(String.valueOf(PlayerS1.getText())),
+                Integer.parseInt(String.valueOf(PlayerS2.getText())),
+                Integer.parseInt(String.valueOf(PlayerS3.getText())),
+                Integer.parseInt(String.valueOf(PlayerS4.getText())),
+                Integer.parseInt(String.valueOf(PlayerS5.getText())));
+        dataBaseSQLite.addSets(31,
+                Integer.parseInt(String.valueOf(AdversaireS1.getText())),
+                Integer.parseInt(String.valueOf(AdversaireS2.getText())),
+                Integer.parseInt(String.valueOf(AdversaireS3.getText())),
+                Integer.parseInt(String.valueOf(AdversaireS4.getText())),
+                Integer.parseInt(String.valueOf(AdversaireS5.getText())));
+
+        dataBaseSQLite.addStatistiques(41,
+                Integer.parseInt(String.valueOf(Player_nb_pts_gagne_player.getText())),
+                Integer.parseInt(String.valueOf(Player_nb_prem_ere_balle_player.getText())),
+                Integer.parseInt(String.valueOf(Player_nb_aces_player.getText())),
+                Integer.parseInt(String.valueOf(Player_nb_double_fautes_player.getText())),
+                Integer.parseInt(String.valueOf(Player_nb_pts_gagne_prem_balle_player.getText())),
+                Integer.parseInt(String.valueOf(Player_nb_coup_droit_gagant_player.getText())),
+                Integer.parseInt(String.valueOf(Player_nb_jeu_gagne_player.getText())),
+                Integer.parseInt(String.valueOf(Player_nb_faute_direct_player.getText())));
+        dataBaseSQLite.addStatistiques(51,
+                Integer.parseInt(String.valueOf(Adversaire_nb_pts_gagne_player.getText())),
+                Integer.parseInt(String.valueOf(Adversaire_nb_prem_ere_balle_player.getText())),
+                Integer.parseInt(String.valueOf(Adversaire_nb_aces_player.getText())),
+                Integer.parseInt(String.valueOf(Adversaire_nb_double_fautes_player.getText())),
+                Integer.parseInt(String.valueOf(Adversaire_nb_pts_gagne_prem_balle_player.getText())),
+                Integer.parseInt(String.valueOf(Adversaire_nb_coup_droit_gagant_player.getText())),
+                Integer.parseInt(String.valueOf(Adversaire_nb_jeu_gagne_player.getText())),
+                Integer.parseInt(String.valueOf(Adversaire_nb_faute_direct_player.getText())));
     }
 
     private void init() {
@@ -148,8 +189,6 @@ public class addGameActivity extends AppCompatActivity {
         Adversaire_nb_prem_ere_balle_player = findViewById(R.id.AgAdversaire_nb_prem_ere_balle_adversaire);
         Adversaire_nb_pts_gagne_player = findViewById(R.id.AgAdversaire_nb_pts_gagne_adversaire);
         Adversaire_nb_pts_gagne_prem_balle_player = findViewById(R.id.AgAdversaire_nb_pts_gagne_prem_balle_adversaire);
-
-
     }
 
     private void openCamera() {

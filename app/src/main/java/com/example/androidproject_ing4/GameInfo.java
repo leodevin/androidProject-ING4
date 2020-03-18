@@ -25,13 +25,16 @@ public class GameInfo extends AppCompatActivity {
         setContentView(R.layout.activity_game_info);
 
         Intent intent = getIntent();
-        idMatchSelected = intent.getIntExtra("id", 0);
+        idMatchSelected = intent.getIntExtra("id", 1);
 
         frameLayout = (FrameLayout)findViewById(R.id.main_frame);
         topNavigationView = findViewById(R.id.navigation_view);
 
         final Bundle bundle = new Bundle();
         bundle.putInt("id", idMatchSelected);
+        Fragment fragmentStats = new StatsFragment();
+        fragmentStats.setArguments(bundle);
+        setFragment(fragmentStats);
 
         topNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override

@@ -41,7 +41,8 @@ public class MainActivity extends AppCompatActivity {
         dataBaseSQLite = new DataBaseSQLite(this);
 
         // A ENLEVER DES QU'ON A UNE DATABASE - INIT UN MATCH
-        createDataBase();
+        createFirstMatch();
+        createSecondMatch();
 
         initDatas();
 
@@ -65,22 +66,22 @@ public class MainActivity extends AppCompatActivity {
         Cursor cursor_idsMatch = dataBaseSQLite.getIdsMatchs();
         if (cursor_idsMatch.moveToFirst()){
             for (int i=0; i<cursor_idsMatch.getCount(); i++){
-                idMatchs.add(cursor_idsMatch.getInt(i));
-                Cursor cursor_photo = dataBaseSQLite.getPhotosById(cursor_idsMatch.getInt(i));
+                idMatchs.add(cursor_idsMatch.getInt(cursor_idsMatch.getColumnIndex("Id")));
+                Cursor cursor_photo = dataBaseSQLite.getPhotosById(cursor_idsMatch.getInt(cursor_idsMatch.getColumnIndex("Id")));
                 if (cursor_photo.moveToFirst()){
                     photosDuMatch.add(getResources().getIdentifier("drawable/"+cursor_photo.getString(0), "id", this.getPackageName()));
                 }
+                cursor_idsMatch.moveToNext();
             }
         }
 
         // ON RECUPERE TOUTES LES DONNEES IMPORTANTE DES MATCHS
         Cursor cursor_match = dataBaseSQLite.getAllMatchs();
         if (cursor_match.moveToFirst()){
-            for (int i=0; i<cursor_match.getCount(); i++){
-                dates.add(cursor_match.getString(i));
-                i++;
-                adversaires.add(cursor_match.getString(i));
-            }
+            do {
+                dates.add(cursor_match.getString(cursor_match.getColumnIndex("Date")));
+                adversaires.add(cursor_match.getString(cursor_match.getColumnIndex("Adversaire")));
+            }while (cursor_match.moveToNext());
         }
         initRecyclerView();
     }
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    public void createDataBase(){
+    private void createFirstMatch(){
         dataBaseSQLite.addLocalisation(10, 48.864716, 2.349014);
         dataBaseSQLite.addSets(20, 6, 3, 4, 6, 6);
         dataBaseSQLite.addSets(30, 4, 6, 6, 2, 1);
@@ -105,5 +106,19 @@ public class MainActivity extends AppCompatActivity {
         dataBaseSQLite.addPhoto(4, "tennis4", 1);
         dataBaseSQLite.addPhoto(5, "tennis5", 1);
         dataBaseSQLite.addMatch(1, "12/04/2020","Roger Federrer", "Nadal", "2h33", 10, 20, 30, 40, 50);
+    }
+
+    private void createSecondMatch(){
+        dataBaseSQLite.addLocalisation(11, 43.864716, 4.349014);
+        dataBaseSQLite.addSets(21, 6, 4, 7, 5, 6);
+        dataBaseSQLite.addSets(31, 2, 6, 5, 7, 4);
+        dataBaseSQLite.addStatistiques(41, 48, 33, 2, 4, 13, 22, 28, 4);
+        dataBaseSQLite.addStatistiques(51, 51, 25, 3, 2, 15, 32, 24, 3);
+        dataBaseSQLite.addPhoto(6, "tennis1", 2);
+        dataBaseSQLite.addPhoto(7, "tennis2", 2);
+        dataBaseSQLite.addPhoto(8, "tennis3", 2);
+        dataBaseSQLite.addPhoto(9, "tennis4", 2);
+        dataBaseSQLite.addPhoto(10, "tennis5", 2);
+        dataBaseSQLite.addMatch(2, "15/05/2020","Roger Federrer", "Monfils", "2h01", 11, 21, 31, 41, 51);
     }
 }

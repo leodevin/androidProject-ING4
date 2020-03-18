@@ -20,7 +20,7 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
     private static final String TABLE_STATISTIQUES = "Statistiques";
     private static final String TABLE_PHOTOS = "Photos";
     private static final String TABLE_MATCHS = "Matchs";
-    private static final int VERSION = 6;
+    private static final int VERSION = 8;
 
     // FIELDS
     private static final String COLUMS_id = "Id";

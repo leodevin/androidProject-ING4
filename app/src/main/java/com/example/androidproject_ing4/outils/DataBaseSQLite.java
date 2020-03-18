@@ -20,7 +20,7 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
     private static final String TABLE_STATISTIQUES = "Statistiques";
     private static final String TABLE_PHOTOS = "Photos";
     private static final String TABLE_MATCHS = "Matchs";
-    private static final int VERSION = 4;
+    private static final int VERSION = 6;
 
     // FIELDS
     private static final String COLUMS_id = "Id";
@@ -37,14 +37,14 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
     private static final String COLUMS_cinq = "cinq";
 
     // STATISTIQUES
-    private static final String COLUMS_NbPtsGagnes = "nbPtsGagnes";
-    private static final String COLUMS_PremieresBalles = "PremieresBalles";
+    private static final String COLUMS_NbPtsGagnes = "Nombre_Points_Gagnes";
+    private static final String COLUMS_PremieresBalles = "Premieres_Balles";
     private static final String COLUMS_Aces = "Aces";
-    private static final String COLUMS_DoublesFautes = "DoublesFautes";
-    private static final String COLUMS_PremieresBallesGagnes = "PremieresBallesGagnes";
-    private static final String COLUMS_CoupsDroitsGagnants = "CoupsDroitsGagnants";
-    private static final String COLUMS_NombreDeJeuGagnes = "NombreDeJeuGagnes";
-    private static final String COLUMS_FautesDirects = "FautesDirects";
+    private static final String COLUMS_DoublesFautes = "Doubles_Fautes";
+    private static final String COLUMS_PremieresBallesGagnes = "Premieres_Balles_Gagnes";
+    private static final String COLUMS_CoupsDroitsGagnants = "Coups_Droits_Gagnants";
+    private static final String COLUMS_NombreDeJeuGagnes = "Nombre_de_Jeu_Gagnes";
+    private static final String COLUMS_FautesDirects = "Fautes_Directs";
 
     // PHOTOS
     private static final String COLUMS_Path = "Path";
@@ -242,6 +242,21 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
         return cursor;
     }
 
+    public ArrayList<String> getNomsPlayers(int id) {
+        database = this.getReadableDatabase();
+        String requete = "SELECT " + COLUMS_Joueur + ", " + COLUMS_Adversaire + " FROM " + TABLE_MATCHS + " WHERE " + COLUMS_id + " = " + id;
+        Cursor cursor = database.rawQuery(requete, null);
+
+        ArrayList<String> nomsPlayers = new ArrayList<>();
+        if (cursor.moveToFirst()){
+            if (!cursor.isNull(0) && !cursor.isNull(1)){
+                nomsPlayers.add(String.valueOf(cursor.getString(0)));
+                nomsPlayers.add(String.valueOf(cursor.getString(1)));
+            }
+        }
+        return nomsPlayers;
+    }
+
     public Cursor getIdsMatchs() {
         database = this.getReadableDatabase();
         String requete = "SELECT " + COLUMS_id + " FROM " + TABLE_MATCHS;
@@ -256,19 +271,35 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public ArrayList<Integer> getSetsIdFromMatch(int id){
+    public ArrayList<String> getSetsIdFromMatch(int id){
         database = this.getReadableDatabase();
-        String requete = "SELECT " + COLUMS_SetsJoueur + "," + COLUMS_SetsAdversaire + " FROM " + TABLE_MATCHS + " WHERE " + COLUMS_id + " = " + id;
+        String requete = "SELECT " + COLUMS_SetsJoueur + "," + COLUMS_SetsAdversaire + "," + COLUMS_Duree + " FROM " + TABLE_MATCHS + " WHERE " + COLUMS_id + " = " + id;
         Cursor cursor = database.rawQuery(requete, null);
 
-        ArrayList<Integer> idSets = new ArrayList<>();
+        ArrayList<String> idSets = new ArrayList<>();
         if (cursor.moveToFirst()){
-            if (!cursor.isNull(0) && !cursor.isNull(1)){
-                idSets.add(cursor.getInt(0));
-                idSets.add(cursor.getInt(1));
+            if (!cursor.isNull(0) && !cursor.isNull(1) && !cursor.isNull(2)){
+                idSets.add(String.valueOf(cursor.getInt(0)));
+                idSets.add(String.valueOf(cursor.getInt(1)));
+                idSets.add(cursor.getString(2));
             }
         }
         return idSets;
+    }
+
+    public ArrayList<String> getStatsIdFromMatch(int id){
+        database = this.getReadableDatabase();
+        String requete = "SELECT " + COLUMS_StatistiquesJoueur + "," + COLUMS_StatistiquesAdversaire + " FROM " + TABLE_MATCHS + " WHERE " + COLUMS_id + " = " + id;
+        Cursor cursor = database.rawQuery(requete, null);
+
+        ArrayList<String> idStats = new ArrayList<>();
+        if (cursor.moveToFirst()){
+            if (!cursor.isNull(0) && !cursor.isNull(1)){
+                idStats.add(String.valueOf(cursor.getInt(0)));
+                idStats.add(String.valueOf(cursor.getInt(1)));
+            }
+        }
+        return idStats;
     }
 
     // GETTERS BY ID

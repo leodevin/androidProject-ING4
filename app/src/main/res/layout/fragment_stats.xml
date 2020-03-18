@@ -27,40 +27,9 @@
 
         <TableRow
             android:id="@+id/sets_joueur"
-            android:layout_width="0dp">
+            android:layout_width="0dp"/>
 
-            <TextView
-                android:layout_width="120dp"
-                android:padding="3dip"
-                android:text="@string/Roger_ederer" /><![CDATA[
-
-
-
-            />
-
-            />
-
-
-        ]]>
-        </TableRow>
-
-        <TableRow android:id="@+id/sets_adversaire">
-
-            <TextView
-                android:padding="3dip"
-                android:text="@string/adversaire" /><![CDATA[
-
-            />
-
-
-
-            />
-
-
-
-            />
-        ]]>
-        </TableRow>
+        <TableRow android:id="@+id/sets_adversaire"/>
 
     </TableLayout>
 
@@ -82,8 +51,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="30dp"
         android:layout_toEndOf="@+id/duree_text"
-        android:textSize="20sp"
-        android:text="138 minutes" />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/statistiques_title"
@@ -100,214 +68,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/statistiques_title"
-        android:layout_marginTop="32dp"
         android:layout_marginHorizontal="23dp"
-        android:stretchColumns="*">
-
-        <TableRow
-            android:layout_width="0dp">
-
-            <TextView
-                android:layout_width="120dp"
-                android:padding="3dip"
-                android:text="" />
-
-            <TextView
-                android:padding="3dip"
-                android:text="@string/Roger_ederer"
-                android:textAlignment="center"
-                android:background="#F4F4F4"/>
-
-            <TextView
-                android:padding="3dip"
-                android:textAlignment="center"
-                android:text="@string/adversaire" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="0dp">
-
-            <TextView
-                android:layout_width="120dp"
-                android:padding="3dip"
-                android:text="@string/nombre_points_gagne" />
-
-            <TextView
-                android:id="@+id/nb_pts_gagne_player"
-                android:padding="3dip"
-                android:text="@string/_0"
-                android:textAlignment="center"
-                android:background="#F4F4F4"/>
-
-            <TextView
-                android:id="@+id/nb_pts_gagne_adversaire"
-                android:padding="3dip"
-                android:textAlignment="center"
-                android:text="@string/_0" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="0dp">
-
-            <TextView
-                android:layout_width="120dp"
-                android:padding="3dip"
-                android:text="@string/prem_ere_balle" />
-
-            <TextView
-                android:id="@+id/nb_prem_ere_balle_player"
-                android:padding="3dip"
-                android:text="@string/_0"
-                android:textAlignment="center"
-                android:background="#F4F4F4"/>
-
-            <TextView
-                android:id="@+id/nb_prem_ere_balle_adversaire"
-                android:padding="3dip"
-                android:textAlignment="center"
-                android:text="@string/_0" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="0dp">
-
-            <TextView
-                android:layout_width="120dp"
-                android:padding="3dip"
-                android:text="@string/aces" />
-
-            <TextView
-                android:id="@+id/nb_aces_player"
-                android:padding="3dip"
-                android:text="@string/_0"
-                android:textAlignment="center"
-                android:background="#F4F4F4"/>
-
-            <TextView
-                android:id="@+id/nb_aces_adversaire"
-                android:padding="3dip"
-                android:textAlignment="center"
-                android:text="@string/_0" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="0dp">
-
-            <TextView
-                android:layout_width="120dp"
-                android:padding="3dip"
-                android:text="@string/double_fautes" />
-
-            <TextView
-                android:id="@+id/nb_double_fautes_player"
-                android:padding="3dip"
-                android:text="@string/_0"
-                android:textAlignment="center"
-                android:background="#F4F4F4"/>
-
-            <TextView
-                android:id="@+id/nb_double_fautes_adversaire"
-                android:padding="3dip"
-                android:textAlignment="center"
-                android:text="@string/_0" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="0dp">
-
-            <TextView
-                android:layout_width="120dp"
-                android:padding="3dip"
-                android:text="@string/pts_gagne_prem_balle" />
-
-            <TextView
-                android:id="@+id/nb_pts_gagne_prem_balle_player"
-                android:padding="3dip"
-                android:text="@string/_0"
-                android:textAlignment="center"
-                android:background="#F4F4F4"/>
-
-            <TextView
-                android:id="@+id/nb_pts_gagne_prem_balle_adversaire"
-                android:padding="3dip"
-                android:textAlignment="center"
-                android:text="@string/_0" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="0dp">
-
-            <TextView
-                android:layout_width="120dp"
-                android:padding="3dip"
-                android:text="@string/coup_droit_gagant" />
-
-            <TextView
-                android:id="@+id/nb_coup_droit_gagant_player"
-                android:layout_height="match_parent"
-                android:padding="3dip"
-                android:text="@string/_0"
-                android:textAlignment="center"
-                android:background="#F4F4F4"/>
-
-            <TextView
-                android:id="@+id/nb_coup_droit_gagant_adversaire"
-                android:padding="3dip"
-                android:layout_height="match_parent"
-                android:textAlignment="center"
-                android:text="@string/_0" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="0dp">
-
-            <TextView
-                android:layout_width="120dp"
-                android:padding="3dip"
-                android:text="@string/nb_jeu_gagne" />
-
-            <TextView
-                android:id="@+id/nb_jeu_gagne_player"
-                android:padding="3dip"
-                android:text="@string/_0"
-                android:layout_height="match_parent"
-                android:textAlignment="center"
-                android:background="#F4F4F4"/>
-
-            <TextView
-                android:id="@+id/nb_jeu_gagne_adversaire"
-                android:padding="3dip"
-                android:layout_height="match_parent"
-                android:textAlignment="center"
-                android:text="@string/_0" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="0dp">
-
-            <TextView
-                android:layout_width="120dp"
-                android:padding="3dip"
-                android:text="@string/nb_faute_direct" />
-
-            <TextView
-                android:id="@+id/nb_faute_direct_player"
-                android:padding="3dip"
-                android:text="@string/_0"
-                android:layout_height="match_parent"
-                android:textAlignment="center"
-                android:background="#F4F4F4"/>
-
-            <TextView
-                android:id="@+id/nb_faute_direct_adversaire"
-                android:padding="3dip"
-                android:layout_height="match_parent"
-                android:textAlignment="center"
-                android:text="@string/_0" />
-        </TableRow>
-
-
-    </TableLayout>
+        android:layout_marginTop="32dp"
+        android:orientation="horizontal"
+        android:stretchColumns="*"/>
 
 
 </RelativeLayout>

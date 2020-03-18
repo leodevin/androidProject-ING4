@@ -97,13 +97,13 @@ public class MainActivity extends AppCompatActivity {
         dataBaseSQLite.addLocalisation(10, 48.864716, 2.349014);
         dataBaseSQLite.addSets(20, 6, 3, 4, 6, 6);
         dataBaseSQLite.addSets(30, 4, 6, 6, 2, 1);
-        dataBaseSQLite.addStatistiques(40, 100, 100, 100, 100, 100, 100, 100, 100);
-        dataBaseSQLite.addStatistiques(50, 100, 100, 100, 100, 100, 100, 100, 100);
+        dataBaseSQLite.addStatistiques(40, 78, 23, 3, 3, 18, 32, 25, 3);
+        dataBaseSQLite.addStatistiques(50, 61, 15, 6, 4, 15, 22, 19, 1);
         dataBaseSQLite.addPhoto(1, "tennis1", 1);
         dataBaseSQLite.addPhoto(2, "tennis2", 1);
         dataBaseSQLite.addPhoto(3, "tennis3", 1);
         dataBaseSQLite.addPhoto(4, "tennis4", 1);
         dataBaseSQLite.addPhoto(5, "tennis5", 1);
-        dataBaseSQLite.addMatch(1, "12/04/2020","Roger Federrer", "Nadal", "2H33", 10, 20, 30, 40, 50);
+        dataBaseSQLite.addMatch(1, "12/04/2020","Roger Federrer", "Nadal", "2h33", 10, 20, 30, 40, 50);
     }
 }

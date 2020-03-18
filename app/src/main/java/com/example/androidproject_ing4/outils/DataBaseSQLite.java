@@ -76,12 +76,12 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_LOCALISATIONS + " ( "
-                + COLUMS_id + " INTEGER PRIMARY KEY, "
+                + COLUMS_id + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMS_latitude + " DOUBLE, "
                 + COLUMS_longitude + " DOUBLE);");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_SETS + " ( "
-                + COLUMS_id + " INTEGER PRIMARY KEY, "
+                + COLUMS_id + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMS_un + " INTEGER, "
                 + COLUMS_deux + " INTEGER, "
                 + COLUMS_trois + " INTEGER, "
@@ -89,7 +89,7 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
                 + COLUMS_cinq + " INTEGER);");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_STATISTIQUES + " ( "
-                + COLUMS_id + " INTEGER PRIMARY KEY, "
+                + COLUMS_id + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMS_NbPtsGagnes + " INTEGER, "
                 + COLUMS_PremieresBalles + " INTEGER, "
                 + COLUMS_Aces + " INTEGER, "
@@ -100,13 +100,13 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
                 + COLUMS_FautesDirects + " INTEGER);");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_PHOTOS + " ( "
-                + COLUMS_id + " INTEGER PRIMARY KEY, "
+                + COLUMS_id + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMS_Path + " TEXT, "
                 + COLUMS_IdMatchs + " INTEGER, "
                 + "FOREIGN KEY (" + COLUMS_IdMatchs + ") REFERENCES " + TABLE_MATCHS + " (" + COLUMS_id + "));");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_MATCHS + " ( "
-                + COLUMS_id + " INTEGER PRIMARY KEY, "
+                + COLUMS_id + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMS_Date + " TEXT, "
                 + COLUMS_Joueur + " TEXT, "
                 + COLUMS_Adversaire + " TEXT, "

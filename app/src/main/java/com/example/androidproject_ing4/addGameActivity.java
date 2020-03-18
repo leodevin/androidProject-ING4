@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -30,24 +31,57 @@ import java.io.InputStreamReader;
 
 public class addGameActivity extends AppCompatActivity {
 
-    Button takePicture;
-    ImageView takenPicture;
+
     private static final int PERMISSION_CODE = 1000;
     private static final int IMAGE_CAPTURE_CODE = 1001 ;
-    Bitmap image_bitmap;
-    Uri image_uri;
-    InternalMemoryController internalMemoryController;
+
+    //Variable pour l'enregistrement et le fontionnement
+    private InternalMemoryController internalMemoryController;
+    private Bitmap image_bitmap;
+    private Uri image_uri;
+    private ImageView takenPicture;
+    private Button save;
+
+    //Edit text de saisie des infos
+    private EditText PlayerS1;
+    private EditText PlayerS2;
+    private EditText PlayerS3;
+    private EditText PlayerS4;
+    private EditText PlayerS5;
+
+    private EditText AdversaireS1;
+    private EditText AdversaireS2;
+    private EditText AdversaireS3;
+    private EditText AdversaireS4;
+    private EditText AdversaireS5;
+
+    //variable pour la saisie des stats
+    private EditText Player_nb_pts_gagne_player;
+    private EditText Player_nb_prem_ere_balle_player;
+    private EditText Player_nb_aces_player;
+    private EditText Player_nb_double_fautes_player;
+    private EditText Player_nb_pts_gagne_prem_balle_player;
+    private EditText Player_nb_coup_droit_gagant_player;
+    private EditText Player_nb_jeu_gagne_player;
+    private EditText Player_nb_faute_direct_player;
+
+    private EditText Adversaire_nb_pts_gagne_player;
+    private EditText Adversaire_nb_prem_ere_balle_player;
+    private EditText Adversaire_nb_aces_player;
+    private EditText Adversaire_nb_double_fautes_player;
+    private EditText Adversaire_nb_pts_gagne_prem_balle_player;
+    private EditText Adversaire_nb_coup_droit_gagant_player;
+    private EditText Adversaire_nb_jeu_gagne_player;
+    private EditText Adversaire_nb_faute_direct_player;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_game);
 
-        internalMemoryController = new InternalMemoryController();
-        takePicture = findViewById(R.id.takePicture);
-        takenPicture = findViewById(R.id.apercu_picture);
+        init();
 
-        takePicture.setOnClickListener(new View.OnClickListener() {
+        takenPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //si l'os est mashmalow -> request runtime permission
@@ -69,6 +103,53 @@ public class addGameActivity extends AppCompatActivity {
                 }
             }
         });
+
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //enregistrer dans la database le nouveau match
+            }
+        });
+    }
+
+    private void init() {
+        //Variable de fontionnement
+        internalMemoryController = new InternalMemoryController();
+        takenPicture = findViewById(R.id.apercu_picture);
+        save = findViewById(R.id.AddGameSaveButton);
+
+        //Edit text pour la saisie des infos sur le match
+        PlayerS1 = findViewById(R.id.AGPlayerS1);
+        PlayerS2 = findViewById(R.id.AGPlayerS2);
+        PlayerS3 = findViewById(R.id.AGPlayerS3);
+        PlayerS4 = findViewById(R.id.AGPlayerS4);
+        PlayerS5 = findViewById(R.id.AGPlayerS5);
+
+        AdversaireS1 = findViewById(R.id.AGAdversaireS1);
+        AdversaireS2 = findViewById(R.id.AGAdversaireS2);
+        AdversaireS3 = findViewById(R.id.AGAdversaireS3);
+        AdversaireS4 = findViewById(R.id.AGAdversaireS4);
+        AdversaireS5 = findViewById(R.id.AGAdversaireS5);
+
+        Player_nb_aces_player = findViewById(R.id.AgPlayer_nb_aces_player);
+        Player_nb_coup_droit_gagant_player = findViewById(R.id.AgPlayer_nb_coup_droit_gagant_player);
+        Player_nb_double_fautes_player = findViewById(R.id.AgPlayer_nb_double_fautes_player);
+        Player_nb_faute_direct_player = findViewById(R.id.AgPlayer_nb_faute_direct_player);
+        Player_nb_jeu_gagne_player = findViewById(R.id.AgPlayer_nb_jeu_gagne_player);
+        Player_nb_prem_ere_balle_player = findViewById(R.id.AgPlayer_nb_prem_ere_balle_player);
+        Player_nb_pts_gagne_player = findViewById(R.id.AgPlayer_nb_pts_gagne_player);
+        Player_nb_pts_gagne_prem_balle_player = findViewById(R.id.AgPlayer_nb_pts_gagne_prem_balle_player);
+
+        Adversaire_nb_aces_player = findViewById(R.id.AgAdversaire_nb_aces_adversaire);
+        Adversaire_nb_coup_droit_gagant_player = findViewById(R.id.AgAdversaire_nb_coup_droit_gagant_adversaire);
+        Adversaire_nb_double_fautes_player = findViewById(R.id.AgAdversaire_nb_double_fautes_adversaire);
+        Adversaire_nb_faute_direct_player = findViewById(R.id.AgAdversaire_nb_faute_direct_adversaire);
+        Adversaire_nb_jeu_gagne_player = findViewById(R.id.AgAdversaire_nb_jeu_gagne_adversaire);
+        Adversaire_nb_prem_ere_balle_player = findViewById(R.id.AgAdversaire_nb_prem_ere_balle_adversaire);
+        Adversaire_nb_pts_gagne_player = findViewById(R.id.AgAdversaire_nb_pts_gagne_adversaire);
+        Adversaire_nb_pts_gagne_prem_balle_player = findViewById(R.id.AgAdversaire_nb_pts_gagne_prem_balle_adversaire);
+
+
     }
 
     private void openCamera() {
@@ -114,4 +195,7 @@ public class addGameActivity extends AppCompatActivity {
             //on affiche l'image sauvegardé (pour vérifier que la sauvegarde a été correctement effectué
             takenPicture.setImageBitmap(internalMemoryController.readImage(getApplicationContext(),"images.txt"));
     }
+
+
+
 }

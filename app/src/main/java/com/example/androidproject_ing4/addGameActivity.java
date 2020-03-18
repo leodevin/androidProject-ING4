@@ -8,6 +8,8 @@ import android.Manifest;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Camera;
 import android.net.Uri;
 import android.os.Build;
@@ -18,19 +20,30 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class addGameActivity extends AppCompatActivity {
 
     Button takePicture;
     ImageView takenPicture;
     private static final int PERMISSION_CODE = 1000;
     private static final int IMAGE_CAPTURE_CODE = 1001 ;
+    Bitmap image_bitmap;
     Uri image_uri;
+    InternalMemoryController internalMemoryController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_game);
 
+        internalMemoryController = new InternalMemoryController();
         takePicture = findViewById(R.id.takePicture);
         takenPicture = findViewById(R.id.apercu_picture);
 
@@ -90,7 +103,15 @@ public class addGameActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(resultCode==RESULT_OK){
             //Do something with our captured image
-            takenPicture.setImageURI(image_uri);
+            try {
+                image_bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), image_uri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+            //on sauvegarde l'image
+            internalMemoryController.writeImage(getApplicationContext(), image_bitmap);
+            //on affiche l'image sauvegardé (pour vérifier que la sauvegarde a été correctement effectué
+            takenPicture.setImageBitmap(internalMemoryController.readImage(getApplicationContext(),"images.txt"));
     }
 }

@@ -25,6 +25,7 @@
     <string name="addGameTitle">Ajouter un match</string>
     <string name="addGameResTitle">Résultat du match</string>
     <string name="takePicture">Prendre une photo</string>
+    <string name="save">Enregistrer</string>
 
 
 </resources>

@@ -42,8 +42,6 @@ public class InternalMemoryController extends AppCompatActivity {
             return imageLoad = BitmapFactory.decodeStream(fileInputStream);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return imageLoad;
     }

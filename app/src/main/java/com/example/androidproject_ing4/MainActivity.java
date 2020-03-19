@@ -11,9 +11,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.androidproject_ing4.outils.ConnectionDistant;
 import com.example.androidproject_ing4.outils.DataBaseSQLite;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,6 +39,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ConnectionDistant connectionDistant = new ConnectionDistant();
+        Connection connection;
+        try {
+            connection = connectionDistant.getConnection();
+            if (connection != null){
+                Toast.makeText(this, "Connection etablished", Toast.LENGTH_SHORT).show();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         gameInfo = (Button)findViewById(R.id.addGameButton);
         nomJoueur = (TextView)findViewById(R.id.nomJoueur);
@@ -121,4 +136,5 @@ public class MainActivity extends AppCompatActivity {
         dataBaseSQLite.addPhoto(10, "tennis5", 2);
         dataBaseSQLite.addMatch(2, "15/05/2020","Roger Federrer", "Monfils", "2h01", 11, 21, 31, 41, 51);
     }
+
 }

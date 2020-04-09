@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,9 +20,12 @@ import com.example.androidproject_ing4.outils.DataBaseSQLite;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.BitSet;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
+
+    private InternalMemoryController internalMemoryController = new InternalMemoryController();
 
     private Button gameInfo;
     private TextView nomJoueur;
@@ -32,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     //vars for recyclerview
     private ArrayList<String> adversaires = new ArrayList<>();
     private ArrayList<String> dates = new ArrayList<>();
-    private ArrayList<Integer> photosDuMatch = new ArrayList<>();
+    private ArrayList<Bitmap> photosDuMatch = new ArrayList<>();
     private ArrayList<Integer> idMatchs = new ArrayList<>();
 
     @Override
@@ -83,7 +87,10 @@ public class MainActivity extends AppCompatActivity {
                 idMatchs.add(cursor_idsMatch.getInt(cursor_idsMatch.getColumnIndex("Id")));
                 Cursor cursor_photo = dataBaseSQLite.getPhotosById(cursor_idsMatch.getInt(cursor_idsMatch.getColumnIndex("Id")));
                 if (cursor_photo.moveToFirst()){
-                    photosDuMatch.add(getResources().getIdentifier("drawable/"+cursor_photo.getString(0), "id", this.getPackageName()));
+                    if (internalMemoryController.readImage(getApplicationContext(),cursor_photo.getString(0)) != null){
+                        photosDuMatch.add(internalMemoryController.readImage(getApplicationContext(),cursor_photo.getString(0)));
+                    }
+                    //photosDuMatch.add(getResources().getIdentifier("drawable/"+cursor_photo.getString(0), "id", this.getPackageName()));
                 }
                 cursor_idsMatch.moveToNext();
             }

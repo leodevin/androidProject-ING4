@@ -1,6 +1,7 @@
 package com.example.androidproject_ing4;
 
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -31,8 +32,10 @@ public class photoFragment extends Fragment {
     // Database
     private DataBaseSQLite dataBaseSQLite;
 
+    private InternalMemoryController internalMemoryController = new InternalMemoryController();
+
     private ArrayList<String> imagesTitle = new ArrayList<>();
-    private ArrayList<Integer> images = new ArrayList<>();
+    private ArrayList<Bitmap> images = new ArrayList<>();
 
     private int idMatchSelected;
 
@@ -54,7 +57,8 @@ public class photoFragment extends Fragment {
 
         for (int i=0; i<imagesTitle.size(); i++){
             try {
-                images.add(getResources().getIdentifier("drawable/"+imagesTitle.get(i), "id", Objects.requireNonNull(getActivity()).getPackageName()));
+                images.add(internalMemoryController.readImage(getContext(), imagesTitle.get(i)));
+                //images.add(getResources().getIdentifier("drawable/"+imagesTitle.get(i), "id", Objects.requireNonNull(getActivity()).getPackageName()));
             }catch (NullPointerException e){ Log.d(TAG, "Problem Package name");}
         }
 
@@ -63,7 +67,7 @@ public class photoFragment extends Fragment {
         carouselView.setImageListener(new ImageListener() {
             @Override
             public void setImageForPosition(int position, ImageView imageView) {
-                imageView.setImageResource(images.get(position));
+                imageView.setImageBitmap(images.get(position));
             }
         });
         carouselView.setImageClickListener(new ImageClickListener() {

@@ -19,10 +19,10 @@ public class InternalMemoryController extends AppCompatActivity {
 
     }
 
-    public void writeImage (Context context, Bitmap image_bitmap){
+    public void writeImage (Context context, Bitmap image_bitmap, String path){
         try {
             FileOutputStream fileOutputStream;
-            fileOutputStream = context.openFileOutput("images.txt", MODE_PRIVATE);
+            fileOutputStream = context.openFileOutput(path, MODE_PRIVATE);
             image_bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
             fileOutputStream.close();
 

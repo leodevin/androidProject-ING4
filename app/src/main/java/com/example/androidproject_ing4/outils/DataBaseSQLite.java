@@ -20,7 +20,7 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
     private static final String TABLE_STATISTIQUES = "Statistiques";
     private static final String TABLE_PHOTOS = "Photos";
     private static final String TABLE_MATCHS = "Matchs";
-    private static final int VERSION = 9;
+    private static final int VERSION = 10;
 
     // FIELDS
     private static final String COLUMS_id = "Id";
@@ -255,6 +255,15 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
         Cursor cursor = database.rawQuery(requete, null);
         return cursor;
     }
+
+    public int getLastIdFromMatchs()
+    {
+        SQLiteDatabase database=this.getReadableDatabase();
+        Cursor cursor = database.rawQuery("SELECT MAX("+COLUMS_id+") FROM "+TABLE_MATCHS, null);
+        int maxid = (cursor.moveToFirst() ? cursor.getInt(0) : 0);
+        return maxid;
+    }
+
 
     public ArrayList<String> getSetsIdFromMatch(int id){
         database = this.getReadableDatabase();

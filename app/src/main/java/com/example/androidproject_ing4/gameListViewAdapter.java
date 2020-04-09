@@ -2,6 +2,7 @@ package com.example.androidproject_ing4;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,12 +24,12 @@ public class gameListViewAdapter extends RecyclerView.Adapter<gameListViewAdapte
     private ArrayList<Integer> gamesId = new ArrayList<>();
     private ArrayList<String> gamesDate = new ArrayList<>();
     private ArrayList<String> adversaires = new ArrayList<>();
-    private ArrayList<Integer> gamesPicture = new ArrayList<>();
+    private ArrayList<Bitmap> gamesPicture = new ArrayList<>();
 
     private Context context;
     public View v;
 
-    public gameListViewAdapter(ArrayList<Integer> gamesId, ArrayList<String> gamesDate, ArrayList<String> adversaires, ArrayList<Integer> gamesPicture,  Context context) {
+    public gameListViewAdapter(ArrayList<Integer> gamesId, ArrayList<String> gamesDate, ArrayList<String> adversaires, ArrayList<Bitmap> gamesPicture, Context context) {
         this.gamesId = gamesId;
         this.gamesDate = gamesDate;
         this.adversaires = adversaires;
@@ -50,7 +51,8 @@ public class gameListViewAdapter extends RecyclerView.Adapter<gameListViewAdapte
 
         holder.adversaire.setText(adversaires.get(position));
         holder.gameDate.setText(gamesDate.get(position));
-        holder.image.setImageResource(gamesPicture.get(position));
+        holder.image.setImageBitmap(gamesPicture.get(position));
+        //holder.image.setImageResource(gamesPicture.get(position));
 
         holder.listLayout.setOnClickListener(new View.OnClickListener() {
             @Override

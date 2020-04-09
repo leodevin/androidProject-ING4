@@ -16,7 +16,9 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,12 +27,22 @@ import android.widget.Toast;
 
 import com.example.androidproject_ing4.outils.DataBaseSQLite;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class addGameActivity extends AppCompatActivity implements LocationListener {
 
+    private static final String TAG = "AddGameActivity";
     // Database
     DataBaseSQLite dataBaseSQLite;
+    int path;
+    String mCurrentPhotoPath;
 
     LocationManager locationManager;
     Location location;
@@ -86,7 +98,11 @@ public class addGameActivity extends AppCompatActivity implements LocationListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_game);
 
+        Log.d(TAG, Environment.DIRECTORY_PICTURES);
+
         dataBaseSQLite = new DataBaseSQLite(this);
+
+        path = dataBaseSQLite.getLastIdFromMatchs();
 
         init();
 
@@ -168,10 +184,7 @@ public class addGameActivity extends AppCompatActivity implements LocationListen
                 (int) id_stats1,
                 (int) id_stats2);
 
-        dataBaseSQLite.addPhoto("image", (int) id_match);
-
-
-
+        dataBaseSQLite.addPhoto(String.valueOf(path), (int) id_match);
     }
 
     private void init() {
@@ -255,9 +268,9 @@ public class addGameActivity extends AppCompatActivity implements LocationListen
             }
         }
             //on sauvegarde l'image
-            internalMemoryController.writeImage(getApplicationContext(), image_bitmap);
+            internalMemoryController.writeImage(getApplicationContext(), image_bitmap, String.valueOf(path));
             //on affiche l'image sauvegardé (pour vérifier que la sauvegarde a été correctement effectué
-            takenPicture.setImageBitmap(internalMemoryController.readImage(getApplicationContext(),"images.txt"));
+            takenPicture.setImageBitmap(internalMemoryController.readImage(getApplicationContext(), String.valueOf(path)));
     }
 
     void getLocation() {

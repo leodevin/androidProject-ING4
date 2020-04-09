@@ -20,7 +20,7 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
     private static final String TABLE_STATISTIQUES = "Statistiques";
     private static final String TABLE_PHOTOS = "Photos";
     private static final String TABLE_MATCHS = "Matchs";
-    private static final int VERSION = 8;
+    private static final int VERSION = 9;
 
     // FIELDS
     private static final String COLUMS_id = "Id";
@@ -139,45 +139,38 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
     /*----------------------------------------------------------------------------------------------*/
 
     // Ajout d'une localisation pour un match
-    public boolean addLocalisation(int id, double latitude, double longitude) {
+    public long addLocalisation(double latitude, double longitude) {
 
         database = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMS_id, id);
         contentValues.put(COLUMS_latitude, latitude);
         contentValues.put(COLUMS_longitude, longitude);
-        long result = database.insert(TABLE_LOCALISATIONS, null, contentValues);
 
-        if (result == -1) return false;
-        else return true;
+        return database.insert(TABLE_LOCALISATIONS, null, contentValues);
     }
 
     // Ajout des sets pour un match
-    public boolean addSets(int id, int un, int deux, int trois, int quatre, int cinq) {
+    public long addSets(int un, int deux, int trois, int quatre, int cinq) {
 
         database = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMS_id, id);
         contentValues.put(COLUMS_un, un);
         contentValues.put(COLUMS_deux, deux);
         contentValues.put(COLUMS_trois, trois);
         contentValues.put(COLUMS_quatre, quatre);
         contentValues.put(COLUMS_cinq, cinq);
-        long result = database.insert(TABLE_SETS, null, contentValues);
 
-        if (result == -1) return false;
-        else return true;
+        return database.insert(TABLE_SETS, null, contentValues);
     }
 
     // Ajout d'une statistique pour un match
-    public boolean addStatistiques(int id, int nbPtsGagnes, int premieresBalles, int aces, int doublesFautes, int premieresBallesGagnes, int coupsDroitsGagnants, int nombreDeJeuGagnes, int fautesDirects) {
+    public long addStatistiques(int nbPtsGagnes, int premieresBalles, int aces, int doublesFautes, int premieresBallesGagnes, int coupsDroitsGagnants, int nombreDeJeuGagnes, int fautesDirects) {
 
         database = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMS_id, id);
         contentValues.put(COLUMS_NbPtsGagnes, nbPtsGagnes);
         contentValues.put(COLUMS_PremieresBalles, premieresBalles);
         contentValues.put(COLUMS_Aces, aces);
@@ -186,34 +179,28 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
         contentValues.put(COLUMS_CoupsDroitsGagnants, coupsDroitsGagnants);
         contentValues.put(COLUMS_NombreDeJeuGagnes, nombreDeJeuGagnes);
         contentValues.put(COLUMS_FautesDirects, fautesDirects);
-        long result = database.insert(TABLE_STATISTIQUES, null, contentValues);
 
-        if (result == -1) return false;
-        else return true;
+        return database.insert(TABLE_STATISTIQUES, null, contentValues);
     }
 
     // Ajout d'une statistique pour un match
-    public boolean addPhoto(int id, String path, int idMatchs) {
+    public long addPhoto(String path, int idMatchs) {
 
         database = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMS_id, id);
         contentValues.put(COLUMS_Path, path);
         contentValues.put(COLUMS_IdMatchs, idMatchs);
-        long result = database.insert(TABLE_PHOTOS, null, contentValues);
 
-        if (result == -1)return false;
-        else return true;
+        return database.insert(TABLE_PHOTOS, null, contentValues);
     }
 
     // Ajout d'un match
-    public boolean addMatch(int id, String date,String joueur, String adversaire, String duree, int localisation, int sets1, int sets2, int stats1, int stats2) {
+    public long addMatch(String date,String joueur, String adversaire, String duree, int localisation, int sets1, int sets2, int stats1, int stats2) {
 
         database = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMS_id, id);
         contentValues.put(COLUMS_Date, date);
         contentValues.put(COLUMS_Joueur, joueur);
         contentValues.put(COLUMS_Adversaire, adversaire);
@@ -223,10 +210,8 @@ public class DataBaseSQLite extends SQLiteOpenHelper {
         contentValues.put(COLUMS_SetsAdversaire, sets2);
         contentValues.put(COLUMS_StatistiquesJoueur, stats1);
         contentValues.put(COLUMS_StatistiquesAdversaire, stats2);
-        long result = database.insert(TABLE_MATCHS, null, contentValues);
 
-        if (result == -1) return false;
-        else return true;
+        return database.insert(TABLE_MATCHS, null, contentValues);
     }
 
 

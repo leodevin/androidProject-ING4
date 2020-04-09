@@ -6,11 +6,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Camera;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,18 +25,15 @@ import android.widget.Toast;
 
 import com.example.androidproject_ing4.outils.DataBaseSQLite;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
-public class addGameActivity extends AppCompatActivity {
+public class addGameActivity extends AppCompatActivity implements LocationListener {
 
     // Database
     DataBaseSQLite dataBaseSQLite;
+
+    LocationManager locationManager;
+    Location location;
 
     private static final int PERMISSION_CODE = 1000;
     private static final int IMAGE_CAPTURE_CODE = 1001 ;
@@ -45,6 +44,10 @@ public class addGameActivity extends AppCompatActivity {
     private Uri image_uri;
     private ImageView takenPicture;
     private Button save;
+
+    private EditText date;
+    private EditText nomAdversaire;
+    private EditText duree;
 
     //Edit text de saisie des infos
     private EditText PlayerS1;
@@ -87,6 +90,8 @@ public class addGameActivity extends AppCompatActivity {
 
         init();
 
+        //getLocation();
+
         takenPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -115,26 +120,28 @@ public class addGameActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //enregistrer dans la database le nouveau match
                 saveInDB();
+                Intent intent = new Intent(addGameActivity.this, MainActivity.class);
+                startActivity(intent);
             }
         });
     }
 
     private void saveInDB() {
-        dataBaseSQLite.addSets(21,
-                Integer.parseInt(String.valueOf(PlayerS1.getText())),
+
+        long id_localisation = dataBaseSQLite.addLocalisation(10.12, 34.25);
+
+        long id_set1 = dataBaseSQLite.addSets(Integer.parseInt(String.valueOf(PlayerS1.getText())),
                 Integer.parseInt(String.valueOf(PlayerS2.getText())),
                 Integer.parseInt(String.valueOf(PlayerS3.getText())),
                 Integer.parseInt(String.valueOf(PlayerS4.getText())),
                 Integer.parseInt(String.valueOf(PlayerS5.getText())));
-        dataBaseSQLite.addSets(31,
-                Integer.parseInt(String.valueOf(AdversaireS1.getText())),
+        long id_set2 = dataBaseSQLite.addSets(Integer.parseInt(String.valueOf(AdversaireS1.getText())),
                 Integer.parseInt(String.valueOf(AdversaireS2.getText())),
                 Integer.parseInt(String.valueOf(AdversaireS3.getText())),
                 Integer.parseInt(String.valueOf(AdversaireS4.getText())),
                 Integer.parseInt(String.valueOf(AdversaireS5.getText())));
 
-        dataBaseSQLite.addStatistiques(41,
-                Integer.parseInt(String.valueOf(Player_nb_pts_gagne_player.getText())),
+        long id_stats1 = dataBaseSQLite.addStatistiques(Integer.parseInt(String.valueOf(Player_nb_pts_gagne_player.getText())),
                 Integer.parseInt(String.valueOf(Player_nb_prem_ere_balle_player.getText())),
                 Integer.parseInt(String.valueOf(Player_nb_aces_player.getText())),
                 Integer.parseInt(String.valueOf(Player_nb_double_fautes_player.getText())),
@@ -142,8 +149,7 @@ public class addGameActivity extends AppCompatActivity {
                 Integer.parseInt(String.valueOf(Player_nb_coup_droit_gagant_player.getText())),
                 Integer.parseInt(String.valueOf(Player_nb_jeu_gagne_player.getText())),
                 Integer.parseInt(String.valueOf(Player_nb_faute_direct_player.getText())));
-        dataBaseSQLite.addStatistiques(51,
-                Integer.parseInt(String.valueOf(Adversaire_nb_pts_gagne_player.getText())),
+        long id_stats2 = dataBaseSQLite.addStatistiques(Integer.parseInt(String.valueOf(Adversaire_nb_pts_gagne_player.getText())),
                 Integer.parseInt(String.valueOf(Adversaire_nb_prem_ere_balle_player.getText())),
                 Integer.parseInt(String.valueOf(Adversaire_nb_aces_player.getText())),
                 Integer.parseInt(String.valueOf(Adversaire_nb_double_fautes_player.getText())),
@@ -151,6 +157,21 @@ public class addGameActivity extends AppCompatActivity {
                 Integer.parseInt(String.valueOf(Adversaire_nb_coup_droit_gagant_player.getText())),
                 Integer.parseInt(String.valueOf(Adversaire_nb_jeu_gagne_player.getText())),
                 Integer.parseInt(String.valueOf(Adversaire_nb_faute_direct_player.getText())));
+
+        long id_match = dataBaseSQLite.addMatch(String.valueOf(date.getText()),
+                "Roger Federrer",
+                String.valueOf(nomAdversaire.getText()),
+                String.valueOf(duree.getText()),
+                (int) id_localisation,
+                (int) id_set1,
+                (int) id_set2,
+                (int) id_stats1,
+                (int) id_stats2);
+
+        dataBaseSQLite.addPhoto("image", (int) id_match);
+
+
+
     }
 
     private void init() {
@@ -158,6 +179,10 @@ public class addGameActivity extends AppCompatActivity {
         internalMemoryController = new InternalMemoryController();
         takenPicture = findViewById(R.id.apercu_picture);
         save = findViewById(R.id.AddGameSaveButton);
+
+        date = findViewById(R.id.date_form_value);
+        nomAdversaire = findViewById(R.id.adversaire_form_value);
+        duree = findViewById(R.id.duree_form_value);
 
         //Edit text pour la saisie des infos sur le match
         PlayerS1 = findViewById(R.id.AGPlayerS1);
@@ -235,6 +260,29 @@ public class addGameActivity extends AppCompatActivity {
             takenPicture.setImageBitmap(internalMemoryController.readImage(getApplicationContext(),"images.txt"));
     }
 
+    void getLocation() {
+        try {
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5, this);
+        }
+        catch(SecurityException e) {
+            e.printStackTrace();
+        }
+    }
 
+    @Override
+    public void onLocationChanged(Location location) {
+        this.location = location;
+    }
 
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {}
+
+    @Override
+    public void onProviderEnabled(String s) {
+        Toast.makeText(this, "Please Enable GPS and Internet", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {}
 }

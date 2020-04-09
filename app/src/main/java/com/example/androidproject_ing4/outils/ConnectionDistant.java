@@ -7,6 +7,7 @@ import android.util.Log;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
 
 
@@ -16,6 +17,8 @@ import android.util.Log;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+
+// ------ TEST ----- //
 
 /*
 public class ConnectionDistant {
@@ -62,6 +65,7 @@ public class ConnectionDistant {
 
 public class ConnectionDistant {
 
+    private static String TAG = "Connection";
 
     private String dbms = "mysql";
     private String serverName = "localhost";
@@ -71,26 +75,32 @@ public class ConnectionDistant {
     private String userName = "root";
     private String password = "root";
 
+    private static Statement stmt;
+
+    private String url = "jdbc:mysql://localhost:8889/Coach";
+
     public Connection getConnection() throws SQLException {
 
         Connection conn = null;
-        Properties connectionProps = new Properties();
+        /*Properties connectionProps = new Properties();
         connectionProps.put("user", this.userName);
-        connectionProps.put("password", this.password);
+        connectionProps.put("password", this.password);*/
 
-        if (this.dbms.equals("mysql")) {
-            conn = DriverManager.getConnection(
-                    "jdbc:" + this.dbms + "://" +
-                            this.serverName +
-                            ":" + this.portNumber + "/" + this.dbName, this.userName, this.password);
-        } else if (this.dbms.equals("derby")) {
-            conn = DriverManager.getConnection(
-                    "jdbc:" + this.dbms + ":" +
-                            this.dbName +
-                            ";create=true",
-                    connectionProps);
+        try {
+            //Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(url, userName, password);
+            // création d'un ordre SQL (statement)
+            stmt = conn.createStatement();
+            Log.d(TAG, "Connection etablished 1");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            Log.d(TAG, "Connection FAILED 1");
         }
-        System.out.println("Connected to database");
+        /*conn = DriverManager.getConnection(
+                "jdbc:" + this.dbms + "://" +
+                        this.serverName +
+                        ":" + this.portNumber + "/" + this.dbName, this.userName, this.password);*/
         return conn;
     }
 }

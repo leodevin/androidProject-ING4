@@ -40,16 +40,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ConnectionDistant connectionDistant = new ConnectionDistant();
+        /*ConnectionDistant connectionDistant = new ConnectionDistant();
         Connection connection;
         try {
             connection = connectionDistant.getConnection();
-            if (connection != null){
-                Toast.makeText(this, "Connection etablished", Toast.LENGTH_SHORT).show();
-            }
+            Log.d(TAG, "Connection etablished 2");
         } catch (SQLException e) {
+            Log.d(TAG, "Connection FAILED 2");
             e.printStackTrace();
-        }
+        }*/
 
         gameInfo = (Button)findViewById(R.id.addGameButton);
         nomJoueur = (TextView)findViewById(R.id.nomJoueur);
@@ -109,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    private void createFirstMatch(){
+    /*private void createFirstMatch(){
         dataBaseSQLite.addLocalisation(10, 48.864716, 2.349014);
         dataBaseSQLite.addSets(20, 6, 3, 4, 6, 6);
         dataBaseSQLite.addSets(30, 4, 6, 6, 2, 1);
@@ -135,6 +134,6 @@ public class MainActivity extends AppCompatActivity {
         dataBaseSQLite.addPhoto(9, "tennis4", 2);
         dataBaseSQLite.addPhoto(10, "tennis5", 2);
         dataBaseSQLite.addMatch(2, "15/05/2020","Roger Federrer", "Monfils", "2h01", 11, 21, 31, 41, 51);
-    }
+    }*/
 
 }

@@ -25,7 +25,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.androidproject_ing4.classes.Localisation;
+import com.example.androidproject_ing4.classes.Match;
+import com.example.androidproject_ing4.classes.Photo;
+import com.example.androidproject_ing4.classes.Set;
+import com.example.androidproject_ing4.classes.Statistique;
 import com.example.androidproject_ing4.outils.DataBaseSQLite;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -93,15 +103,22 @@ public class addGameActivity extends AppCompatActivity implements LocationListen
     private EditText Adversaire_nb_jeu_gagne_player;
     private EditText Adversaire_nb_faute_direct_player;
 
+
+    // Write a message to the database
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference refMatchs = database.getReference().child("Matchs");
+    DatabaseReference refLocalisations = database.getReference().child("Localisations");
+    DatabaseReference refSets = database.getReference().child("Sets");
+    DatabaseReference refStats = database.getReference().child("Stats");
+    DatabaseReference refPhotos = database.getReference().child("Photos");
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_game);
 
-        Log.d(TAG, Environment.DIRECTORY_PICTURES);
-
         dataBaseSQLite = new DataBaseSQLite(this);
-
         path = dataBaseSQLite.getLastIdFromMatchs();
 
         init();
@@ -184,7 +201,54 @@ public class addGameActivity extends AppCompatActivity implements LocationListen
                 (int) id_stats1,
                 (int) id_stats2);
 
-        dataBaseSQLite.addPhoto(String.valueOf(path), (int) id_match);
+        long id_photo = dataBaseSQLite.addPhoto(String.valueOf(path), (int) id_match);
+
+        Localisation localisation = new Localisation((int)id_localisation, 10.12, 34.25);
+        Set setJoueur = new Set((int)id_set1, Integer.parseInt(String.valueOf(PlayerS1.getText())),
+                Integer.parseInt(String.valueOf(PlayerS2.getText())),
+                Integer.parseInt(String.valueOf(PlayerS3.getText())),
+                Integer.parseInt(String.valueOf(PlayerS4.getText())),
+                Integer.parseInt(String.valueOf(PlayerS5.getText())));
+        Set setAdversaire = new Set((int)id_set2,Integer.parseInt(String.valueOf(AdversaireS1.getText())),
+                Integer.parseInt(String.valueOf(AdversaireS2.getText())),
+                Integer.parseInt(String.valueOf(AdversaireS3.getText())),
+                Integer.parseInt(String.valueOf(AdversaireS4.getText())),
+                Integer.parseInt(String.valueOf(AdversaireS5.getText())));
+        Statistique statistiqueJoueur = new Statistique((int)id_stats1, Integer.parseInt(String.valueOf(Player_nb_pts_gagne_player.getText())),
+                Integer.parseInt(String.valueOf(Player_nb_prem_ere_balle_player.getText())),
+                Integer.parseInt(String.valueOf(Player_nb_aces_player.getText())),
+                Integer.parseInt(String.valueOf(Player_nb_double_fautes_player.getText())),
+                Integer.parseInt(String.valueOf(Player_nb_pts_gagne_prem_balle_player.getText())),
+                Integer.parseInt(String.valueOf(Player_nb_coup_droit_gagant_player.getText())),
+                Integer.parseInt(String.valueOf(Player_nb_jeu_gagne_player.getText())),
+                Integer.parseInt(String.valueOf(Player_nb_faute_direct_player.getText())));
+        Statistique statistiqueAdversaire = new Statistique((int)id_stats2, Integer.parseInt(String.valueOf(Adversaire_nb_pts_gagne_player.getText())),
+                Integer.parseInt(String.valueOf(Adversaire_nb_prem_ere_balle_player.getText())),
+                Integer.parseInt(String.valueOf(Adversaire_nb_aces_player.getText())),
+                Integer.parseInt(String.valueOf(Adversaire_nb_double_fautes_player.getText())),
+                Integer.parseInt(String.valueOf(Adversaire_nb_pts_gagne_prem_balle_player.getText())),
+                Integer.parseInt(String.valueOf(Adversaire_nb_coup_droit_gagant_player.getText())),
+                Integer.parseInt(String.valueOf(Adversaire_nb_jeu_gagne_player.getText())),
+                Integer.parseInt(String.valueOf(Adversaire_nb_faute_direct_player.getText())));
+        Match match = new Match((int)id_match,String.valueOf(date.getText()),
+                "Roger Federrer",
+                String.valueOf(nomAdversaire.getText()),
+                String.valueOf(duree.getText()),
+                (int) id_localisation,
+                (int) id_set1,
+                (int) id_set2,
+                (int) id_stats1,
+                (int) id_stats2);
+        Photo photo = new Photo((int) id_photo,String.valueOf(path), (int) id_match);
+
+
+        refLocalisations.push().setValue(localisation);
+        refSets.push().setValue(setJoueur);
+        refSets.push().setValue(setAdversaire);
+        refStats.push().setValue(statistiqueJoueur);
+        refStats.push().setValue(statistiqueAdversaire);
+        refMatchs.push().setValue(match);
+        refPhotos.push().setValue(photo);
     }
 
     private void init() {

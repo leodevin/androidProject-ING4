@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "504386520491",
+    "firebase_url": "https://android-tennis-42968.firebaseio.com",
+    "project_id": "android-tennis-42968",
+    "storage_bucket": "android-tennis-42968.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:504386520491:android:b5bddfbc3572434dd4feee",
+        "android_client_info": {
+          "package_name": "com.example.androidproject_ing4"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "504386520491-5mu5fj1ecrloudp4otdgtkg0uvugle0n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.androidproject_ing4",
+            "certificate_hash": "e301898661cb1b075e14c26359bb69b8f993aca0"
+          }
+        },
+        {
+          "client_id": "504386520491-r21a5kkk6cmjnqqgs1jnnmf0a9ro1q0b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBGF1VTvJ__0G2BxkbU58dV_mgOaVgGSk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "504386520491-r21a5kkk6cmjnqqgs1jnnmf0a9ro1q0b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -14,13 +14,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.androidproject_ing4.outils.ConnectionDistant;
 import com.example.androidproject_ing4.outils.DataBaseSQLite;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.BitSet;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -33,34 +31,29 @@ public class MainActivity extends AppCompatActivity {
     // Database
     DataBaseSQLite dataBaseSQLite;
 
+
     //vars for recyclerview
     private ArrayList<String> adversaires = new ArrayList<>();
     private ArrayList<String> dates = new ArrayList<>();
     private ArrayList<Bitmap> photosDuMatch = new ArrayList<>();
     private ArrayList<Integer> idMatchs = new ArrayList<>();
 
+    // Write a message to the database
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference refMatchs = database.getReference().child("Matchs");
+    DatabaseReference refLocalisations = database.getReference().child("Localisations");
+    DatabaseReference refSets = database.getReference().child("Sets");
+    DatabaseReference refStats = database.getReference().child("Stats");
+    DatabaseReference refPhotos = database.getReference().child("Photos");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*ConnectionDistant connectionDistant = new ConnectionDistant();
-        Connection connection;
-        try {
-            connection = connectionDistant.getConnection();
-            Log.d(TAG, "Connection etablished 2");
-        } catch (SQLException e) {
-            Log.d(TAG, "Connection FAILED 2");
-            e.printStackTrace();
-        }*/
-
         gameInfo = (Button)findViewById(R.id.addGameButton);
         nomJoueur = (TextView)findViewById(R.id.nomJoueur);
         dataBaseSQLite = new DataBaseSQLite(this);
-
-        // A ENLEVER DES QU'ON A UNE DATABASE - INIT UN MATCH
-        //createFirstMatch();
-        //createSecondMatch();
 
         initDatas();
 
@@ -75,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initDatas(){
 
-        // ON RECUPERE LE NOM DU JOUEUR DU COACH
+        // ON RECUPERE LE NOM DU JOUEUR
         Cursor cursor_nomJoueur = dataBaseSQLite.getNomJoueur();
         if (cursor_nomJoueur.moveToFirst())
             nomJoueur.setText(cursor_nomJoueur.getString(0));
@@ -90,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
                     if (internalMemoryController.readImage(getApplicationContext(),cursor_photo.getString(0)) != null){
                         photosDuMatch.add(internalMemoryController.readImage(getApplicationContext(),cursor_photo.getString(0)));
                     }
-                    //photosDuMatch.add(getResources().getIdentifier("drawable/"+cursor_photo.getString(0), "id", this.getPackageName()));
                 }
                 cursor_idsMatch.moveToNext();
             }
@@ -115,32 +107,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    /*private void createFirstMatch(){
-        dataBaseSQLite.addLocalisation(10, 48.864716, 2.349014);
-        dataBaseSQLite.addSets(20, 6, 3, 4, 6, 6);
-        dataBaseSQLite.addSets(30, 4, 6, 6, 2, 1);
-        dataBaseSQLite.addStatistiques(40, 78, 23, 3, 3, 18, 32, 25, 3);
-        dataBaseSQLite.addStatistiques(50, 61, 15, 6, 4, 15, 22, 19, 1);
-        dataBaseSQLite.addPhoto(1, "tennis1", 1);
-        dataBaseSQLite.addPhoto(2, "tennis2", 1);
-        dataBaseSQLite.addPhoto(3, "tennis3", 1);
-        dataBaseSQLite.addPhoto(4, "tennis4", 1);
-        dataBaseSQLite.addPhoto(5, "tennis5", 1);
-        dataBaseSQLite.addMatch(1, "12/04/2020","Roger Federrer", "Nadal", "2h33", 10, 20, 30, 40, 50);
+    private void recupDataFromFirebase(){
+
     }
-
-    private void createSecondMatch(){
-        dataBaseSQLite.addLocalisation(11, 43.864716, 4.349014);
-        dataBaseSQLite.addSets(21, 6, 4, 7, 5, 6);
-        dataBaseSQLite.addSets(31, 2, 6, 5, 7, 4);
-        dataBaseSQLite.addStatistiques(41, 48, 33, 2, 4, 13, 22, 28, 4);
-        dataBaseSQLite.addStatistiques(51, 51, 25, 3, 2, 15, 32, 24, 3);
-        dataBaseSQLite.addPhoto(6, "tennis1", 2);
-        dataBaseSQLite.addPhoto(7, "tennis2", 2);
-        dataBaseSQLite.addPhoto(8, "tennis3", 2);
-        dataBaseSQLite.addPhoto(9, "tennis4", 2);
-        dataBaseSQLite.addPhoto(10, "tennis5", 2);
-        dataBaseSQLite.addMatch(2, "15/05/2020","Roger Federrer", "Monfils", "2h01", 11, 21, 31, 41, 51);
-    }*/
-
 }

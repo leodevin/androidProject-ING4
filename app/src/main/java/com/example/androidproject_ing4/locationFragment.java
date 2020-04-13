@@ -141,17 +141,5 @@ public class locationFragment extends Fragment implements OnMapReadyCallback {
         }
 
         return dataBaseSQLite.getLocalisationById(idLocalisation);
-        /*if (cursor.moveToFirst()){
-            do{
-                if (!cursor.isNull(0)){
-                    getCoordonnees.add(cursor.getDouble(0));
-                    Log.d(TAG, "DATA récupérer "+cursor.getDouble(0));
-                    Log.d(TAG, "Coordonnées récupérer pour le match "+idMatchSelected+" localisation "+idLocalisation+ " SIZE "+cursor.getCount());
-                } else {
-                    Log.d(TAG, "Pas de coordonnées pour le match selectionné "+idMatchSelected+" localisation "+idLocalisation);
-                }
-            }while (cursor.moveToNext());
-        }*/
-        //return getCoordonnees;
     }
 }

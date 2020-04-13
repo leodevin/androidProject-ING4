@@ -12,11 +12,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.androidproject_ing4.outils.DataBaseSQLite;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -31,20 +28,12 @@ public class MainActivity extends AppCompatActivity {
     // Database
     DataBaseSQLite dataBaseSQLite;
 
-
     //vars for recyclerview
     private ArrayList<String> adversaires = new ArrayList<>();
     private ArrayList<String> dates = new ArrayList<>();
     private ArrayList<Bitmap> photosDuMatch = new ArrayList<>();
     private ArrayList<Integer> idMatchs = new ArrayList<>();
 
-    // Write a message to the database
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference refMatchs = database.getReference().child("Matchs");
-    DatabaseReference refLocalisations = database.getReference().child("Localisations");
-    DatabaseReference refSets = database.getReference().child("Sets");
-    DatabaseReference refStats = database.getReference().child("Stats");
-    DatabaseReference refPhotos = database.getReference().child("Photos");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,9 +94,5 @@ public class MainActivity extends AppCompatActivity {
         gameListViewAdapter adapter = new gameListViewAdapter(idMatchs ,dates, adversaires, photosDuMatch,this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-    }
-
-    private void recupDataFromFirebase(){
-
     }
 }

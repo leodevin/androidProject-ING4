@@ -2,60 +2,41 @@ package com.example.androidproject_ing4;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
+import android.provider.Settings;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.androidproject_ing4.classes.Localisation;
-import com.example.androidproject_ing4.classes.Match;
-import com.example.androidproject_ing4.classes.Photo;
-import com.example.androidproject_ing4.classes.Set;
-import com.example.androidproject_ing4.classes.Statistique;
 import com.example.androidproject_ing4.outils.DataBaseSQLite;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-public class addGameActivity extends AppCompatActivity implements LocationListener {
+
+public class addGameActivity extends AppCompatActivity {
 
     private static final String TAG = "AddGameActivity";
     // Database
     DataBaseSQLite dataBaseSQLite;
     int path;
-    String mCurrentPhotoPath;
-
-    LocationManager locationManager;
-    Location location;
 
     private static final int PERMISSION_CODE = 1000;
     private static final int IMAGE_CAPTURE_CODE = 1001 ;
@@ -103,27 +84,29 @@ public class addGameActivity extends AppCompatActivity implements LocationListen
     private EditText Adversaire_nb_jeu_gagne_player;
     private EditText Adversaire_nb_faute_direct_player;
 
-
-    // Write a message to the database
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference refMatchs = database.getReference().child("Matchs");
-    DatabaseReference refLocalisations = database.getReference().child("Localisations");
-    DatabaseReference refSets = database.getReference().child("Sets");
-    DatabaseReference refStats = database.getReference().child("Stats");
-    DatabaseReference refPhotos = database.getReference().child("Photos");
-
+    private static final int REQUEST_LOCATION = 1;
+    LocationManager locationManager;
+    Double latitude,longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_game);
 
+        ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            buildAlertMessageNoGps();
+
+        } else if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            getLocation();
+        }
+
         dataBaseSQLite = new DataBaseSQLite(this);
         path = dataBaseSQLite.getLastIdFromMatchs();
 
         init();
-
-        //getLocation();
 
         takenPicture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,103 +135,15 @@ public class addGameActivity extends AppCompatActivity implements LocationListen
             @Override
             public void onClick(View view) {
                 //enregistrer dans la database le nouveau match
-                saveInDB();
-                Intent intent = new Intent(addGameActivity.this, MainActivity.class);
-                startActivity(intent);
+                if (checkNotNullText()){
+                    saveInDB();
+                    Intent intent = new Intent(addGameActivity.this, MainActivity.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(addGameActivity.this, "Veuillez remplir tous les champs !", Toast.LENGTH_SHORT).show();
+                }
             }
         });
-    }
-
-    private void saveInDB() {
-
-        long id_localisation = dataBaseSQLite.addLocalisation(10.12, 34.25);
-
-        long id_set1 = dataBaseSQLite.addSets(Integer.parseInt(String.valueOf(PlayerS1.getText())),
-                Integer.parseInt(String.valueOf(PlayerS2.getText())),
-                Integer.parseInt(String.valueOf(PlayerS3.getText())),
-                Integer.parseInt(String.valueOf(PlayerS4.getText())),
-                Integer.parseInt(String.valueOf(PlayerS5.getText())));
-        long id_set2 = dataBaseSQLite.addSets(Integer.parseInt(String.valueOf(AdversaireS1.getText())),
-                Integer.parseInt(String.valueOf(AdversaireS2.getText())),
-                Integer.parseInt(String.valueOf(AdversaireS3.getText())),
-                Integer.parseInt(String.valueOf(AdversaireS4.getText())),
-                Integer.parseInt(String.valueOf(AdversaireS5.getText())));
-
-        long id_stats1 = dataBaseSQLite.addStatistiques(Integer.parseInt(String.valueOf(Player_nb_pts_gagne_player.getText())),
-                Integer.parseInt(String.valueOf(Player_nb_prem_ere_balle_player.getText())),
-                Integer.parseInt(String.valueOf(Player_nb_aces_player.getText())),
-                Integer.parseInt(String.valueOf(Player_nb_double_fautes_player.getText())),
-                Integer.parseInt(String.valueOf(Player_nb_pts_gagne_prem_balle_player.getText())),
-                Integer.parseInt(String.valueOf(Player_nb_coup_droit_gagant_player.getText())),
-                Integer.parseInt(String.valueOf(Player_nb_jeu_gagne_player.getText())),
-                Integer.parseInt(String.valueOf(Player_nb_faute_direct_player.getText())));
-        long id_stats2 = dataBaseSQLite.addStatistiques(Integer.parseInt(String.valueOf(Adversaire_nb_pts_gagne_player.getText())),
-                Integer.parseInt(String.valueOf(Adversaire_nb_prem_ere_balle_player.getText())),
-                Integer.parseInt(String.valueOf(Adversaire_nb_aces_player.getText())),
-                Integer.parseInt(String.valueOf(Adversaire_nb_double_fautes_player.getText())),
-                Integer.parseInt(String.valueOf(Adversaire_nb_pts_gagne_prem_balle_player.getText())),
-                Integer.parseInt(String.valueOf(Adversaire_nb_coup_droit_gagant_player.getText())),
-                Integer.parseInt(String.valueOf(Adversaire_nb_jeu_gagne_player.getText())),
-                Integer.parseInt(String.valueOf(Adversaire_nb_faute_direct_player.getText())));
-
-        long id_match = dataBaseSQLite.addMatch(String.valueOf(date.getText()),
-                "Roger Federrer",
-                String.valueOf(nomAdversaire.getText()),
-                String.valueOf(duree.getText()),
-                (int) id_localisation,
-                (int) id_set1,
-                (int) id_set2,
-                (int) id_stats1,
-                (int) id_stats2);
-
-        long id_photo = dataBaseSQLite.addPhoto(String.valueOf(path), (int) id_match);
-
-        Localisation localisation = new Localisation((int)id_localisation, 10.12, 34.25);
-        Set setJoueur = new Set((int)id_set1, Integer.parseInt(String.valueOf(PlayerS1.getText())),
-                Integer.parseInt(String.valueOf(PlayerS2.getText())),
-                Integer.parseInt(String.valueOf(PlayerS3.getText())),
-                Integer.parseInt(String.valueOf(PlayerS4.getText())),
-                Integer.parseInt(String.valueOf(PlayerS5.getText())));
-        Set setAdversaire = new Set((int)id_set2,Integer.parseInt(String.valueOf(AdversaireS1.getText())),
-                Integer.parseInt(String.valueOf(AdversaireS2.getText())),
-                Integer.parseInt(String.valueOf(AdversaireS3.getText())),
-                Integer.parseInt(String.valueOf(AdversaireS4.getText())),
-                Integer.parseInt(String.valueOf(AdversaireS5.getText())));
-        Statistique statistiqueJoueur = new Statistique((int)id_stats1, Integer.parseInt(String.valueOf(Player_nb_pts_gagne_player.getText())),
-                Integer.parseInt(String.valueOf(Player_nb_prem_ere_balle_player.getText())),
-                Integer.parseInt(String.valueOf(Player_nb_aces_player.getText())),
-                Integer.parseInt(String.valueOf(Player_nb_double_fautes_player.getText())),
-                Integer.parseInt(String.valueOf(Player_nb_pts_gagne_prem_balle_player.getText())),
-                Integer.parseInt(String.valueOf(Player_nb_coup_droit_gagant_player.getText())),
-                Integer.parseInt(String.valueOf(Player_nb_jeu_gagne_player.getText())),
-                Integer.parseInt(String.valueOf(Player_nb_faute_direct_player.getText())));
-        Statistique statistiqueAdversaire = new Statistique((int)id_stats2, Integer.parseInt(String.valueOf(Adversaire_nb_pts_gagne_player.getText())),
-                Integer.parseInt(String.valueOf(Adversaire_nb_prem_ere_balle_player.getText())),
-                Integer.parseInt(String.valueOf(Adversaire_nb_aces_player.getText())),
-                Integer.parseInt(String.valueOf(Adversaire_nb_double_fautes_player.getText())),
-                Integer.parseInt(String.valueOf(Adversaire_nb_pts_gagne_prem_balle_player.getText())),
-                Integer.parseInt(String.valueOf(Adversaire_nb_coup_droit_gagant_player.getText())),
-                Integer.parseInt(String.valueOf(Adversaire_nb_jeu_gagne_player.getText())),
-                Integer.parseInt(String.valueOf(Adversaire_nb_faute_direct_player.getText())));
-        Match match = new Match((int)id_match,String.valueOf(date.getText()),
-                "Roger Federrer",
-                String.valueOf(nomAdversaire.getText()),
-                String.valueOf(duree.getText()),
-                (int) id_localisation,
-                (int) id_set1,
-                (int) id_set2,
-                (int) id_stats1,
-                (int) id_stats2);
-        Photo photo = new Photo((int) id_photo,String.valueOf(path), (int) id_match);
-
-
-        refLocalisations.push().setValue(localisation);
-        refSets.push().setValue(setJoueur);
-        refSets.push().setValue(setAdversaire);
-        refStats.push().setValue(statistiqueJoueur);
-        refStats.push().setValue(statistiqueAdversaire);
-        refMatchs.push().setValue(match);
-        refPhotos.push().setValue(photo);
     }
 
     private void init() {
@@ -293,6 +188,84 @@ public class addGameActivity extends AppCompatActivity implements LocationListen
         Adversaire_nb_pts_gagne_prem_balle_player = findViewById(R.id.AgAdversaire_nb_pts_gagne_prem_balle_adversaire);
     }
 
+    private void saveInDB() {
+        long id_localisation = dataBaseSQLite.addLocalisation(latitude, longitude);
+        long id_set1 = dataBaseSQLite.addSets(Integer.parseInt(String.valueOf(PlayerS1.getText())),
+                Integer.parseInt(String.valueOf(PlayerS2.getText())),
+                Integer.parseInt(String.valueOf(PlayerS3.getText())),
+                Integer.parseInt(String.valueOf(PlayerS4.getText())),
+                Integer.parseInt(String.valueOf(PlayerS5.getText())));
+        long id_set2 = dataBaseSQLite.addSets(Integer.parseInt(String.valueOf(AdversaireS1.getText())),
+                Integer.parseInt(String.valueOf(AdversaireS2.getText())),
+                Integer.parseInt(String.valueOf(AdversaireS3.getText())),
+                Integer.parseInt(String.valueOf(AdversaireS4.getText())),
+                Integer.parseInt(String.valueOf(AdversaireS5.getText())));
+        long id_stats1 = dataBaseSQLite.addStatistiques(Integer.parseInt(String.valueOf(Player_nb_pts_gagne_player.getText())),
+                Integer.parseInt(String.valueOf(Player_nb_prem_ere_balle_player.getText())),
+                Integer.parseInt(String.valueOf(Player_nb_aces_player.getText())),
+                Integer.parseInt(String.valueOf(Player_nb_double_fautes_player.getText())),
+                Integer.parseInt(String.valueOf(Player_nb_pts_gagne_prem_balle_player.getText())),
+                Integer.parseInt(String.valueOf(Player_nb_coup_droit_gagant_player.getText())),
+                Integer.parseInt(String.valueOf(Player_nb_jeu_gagne_player.getText())),
+                Integer.parseInt(String.valueOf(Player_nb_faute_direct_player.getText())));
+        long id_stats2 = dataBaseSQLite.addStatistiques(Integer.parseInt(String.valueOf(Adversaire_nb_pts_gagne_player.getText())),
+                Integer.parseInt(String.valueOf(Adversaire_nb_prem_ere_balle_player.getText())),
+                Integer.parseInt(String.valueOf(Adversaire_nb_aces_player.getText())),
+                Integer.parseInt(String.valueOf(Adversaire_nb_double_fautes_player.getText())),
+                Integer.parseInt(String.valueOf(Adversaire_nb_pts_gagne_prem_balle_player.getText())),
+                Integer.parseInt(String.valueOf(Adversaire_nb_coup_droit_gagant_player.getText())),
+                Integer.parseInt(String.valueOf(Adversaire_nb_jeu_gagne_player.getText())),
+                Integer.parseInt(String.valueOf(Adversaire_nb_faute_direct_player.getText())));
+        long id_match = dataBaseSQLite.addMatch(String.valueOf(date.getText()),
+                "Roger Federrer",
+                String.valueOf(nomAdversaire.getText()),
+                String.valueOf(duree.getText()),
+                (int) id_localisation,
+                (int) id_set1,
+                (int) id_set2,
+                (int) id_stats1,
+                (int) id_stats2);
+        dataBaseSQLite.addPhoto(String.valueOf(path), (int) id_match);
+    }
+
+    private Boolean checkNotNullText(){
+        if (TextUtils.isEmpty(date.getText().toString())
+                || TextUtils.isEmpty(nomAdversaire.getText().toString())
+                || TextUtils.isEmpty(duree.getText().toString())
+                || TextUtils.isEmpty(PlayerS1.getText().toString())
+                || TextUtils.isEmpty(PlayerS2.getText().toString())
+                || TextUtils.isEmpty(PlayerS3.getText().toString())
+                || TextUtils.isEmpty(PlayerS4.getText().toString())
+                || TextUtils.isEmpty(PlayerS5.getText().toString())
+                || TextUtils.isEmpty(AdversaireS1.getText().toString())
+                || TextUtils.isEmpty(AdversaireS2.getText().toString())
+                || TextUtils.isEmpty(AdversaireS3.getText().toString())
+                || TextUtils.isEmpty(AdversaireS4.getText().toString())
+                || TextUtils.isEmpty(AdversaireS5.getText().toString())
+                || TextUtils.isEmpty(Player_nb_pts_gagne_player.getText().toString())
+                || TextUtils.isEmpty(Player_nb_prem_ere_balle_player.getText().toString())
+                || TextUtils.isEmpty(Player_nb_aces_player.getText().toString())
+                || TextUtils.isEmpty(Player_nb_double_fautes_player.getText().toString())
+                || TextUtils.isEmpty(Player_nb_pts_gagne_prem_balle_player.getText().toString())
+                || TextUtils.isEmpty(Player_nb_coup_droit_gagant_player.getText().toString())
+                || TextUtils.isEmpty(Player_nb_jeu_gagne_player.getText().toString())
+                || TextUtils.isEmpty(Player_nb_faute_direct_player.getText().toString())
+                || TextUtils.isEmpty(Adversaire_nb_pts_gagne_player.getText().toString())
+                || TextUtils.isEmpty(Adversaire_nb_prem_ere_balle_player.getText().toString())
+                || TextUtils.isEmpty(Adversaire_nb_aces_player.getText().toString())
+                || TextUtils.isEmpty(Adversaire_nb_double_fautes_player.getText().toString())
+                || TextUtils.isEmpty(Adversaire_nb_pts_gagne_prem_balle_player.getText().toString())
+                || TextUtils.isEmpty(Adversaire_nb_coup_droit_gagant_player.getText().toString())
+                || TextUtils.isEmpty(Adversaire_nb_jeu_gagne_player.getText().toString())
+                || TextUtils.isEmpty(Adversaire_nb_faute_direct_player.getText().toString())){
+            return false;
+        } else{
+            return true;
+        }
+    }
+
+
+    /* ------------ POUR LE FONCTIONNEMENT DE LA CAMERA ------------*/
     private void openCamera() {
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.TITLE, "New Picture");
@@ -337,29 +310,70 @@ public class addGameActivity extends AppCompatActivity implements LocationListen
             takenPicture.setImageBitmap(internalMemoryController.readImage(getApplicationContext(), String.valueOf(path)));
     }
 
-    void getLocation() {
-        try {
-            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5, this);
+
+
+
+    /* ------------ AVOIR LA LOCALISATION DE L'UTILISATEUR ------------ */
+    private void getLocation() {
+        if (ActivityCompat.checkSelfPermission(addGameActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
+                (addGameActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(addGameActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+
+        } else {
+            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+            Location location1 = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+            Location location2 = locationManager.getLastKnownLocation(LocationManager. PASSIVE_PROVIDER);
+
+            if (location != null) {
+                latitude = location2.getLatitude();
+                longitude = location2.getLongitude();
+
+                Toast.makeText(this, "Your current location is"+ "\n" + "Latitude = " + latitude
+                        + "\n" + "Longitude = " + longitude, Toast.LENGTH_LONG).show();
+
+            } else  if (location1 != null) {
+                latitude = location2.getLatitude();
+                longitude = location2.getLongitude();
+
+                Toast.makeText(this, "Your current location is"+ "\n" + "Latitude = " + latitude
+                        + "\n" + "Longitude = " + longitude, Toast.LENGTH_LONG).show();
+
+
+            } else  if (location2 != null) {
+                latitude = location2.getLatitude();
+                longitude = location2.getLongitude();
+
+                Toast.makeText(this, "Your current location is"+ "\n" + "Latitude = " + latitude
+                        + "\n" + "Longitude = " + longitude, Toast.LENGTH_LONG).show();
+
+            }else{
+
+                Toast.makeText(this,"Unble to Trace your location",Toast.LENGTH_SHORT).show();
+
+            }
         }
-        catch(SecurityException e) {
-            e.printStackTrace();
-        }
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-        this.location = location;
+    protected void buildAlertMessageNoGps() {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Please Turn ON your GPS Connection")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
-
-    @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {}
-
-    @Override
-    public void onProviderEnabled(String s) {
-        Toast.makeText(this, "Please Enable GPS and Internet", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onProviderDisabled(String s) {}
 }
